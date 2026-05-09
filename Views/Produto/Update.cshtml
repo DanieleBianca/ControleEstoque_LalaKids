@@ -1,0 +1,37 @@
+<h1 class="mb-3">Editar Produto</h1>
+
+<form action="/produto/update" method="POST">
+    <input type="hidden" name="Id" value="@Model.Id" /> <!--campo oculto pra passar o id do produto pro controller-->
+    
+    <div class="mb-2">
+        <label>Código de Barras</label>
+        <input class="form-control" name="CodigoBarras" value="@Model.CodigoBarras" />
+    </div>
+    <div class="mb-2">
+        <label>Nome</label>
+        <input class="form-control" name="Nome" value="@Model.Nome" />
+    </div>
+    <div class="mb-2">
+        <label>Descrição</label>
+        <input class="form-control" name="Descricao" value="@Model.Descricao" />
+    </div>
+    <div class="mb-2">
+        <label>Tamanho</label>
+        <input class="form-control" name="Tamanho" value="@Model.Tamanho" />
+    </div>
+    <div class="mb-2">
+        <label>Valor de Compra</label>
+        <input class="form-control" name="ValorCompra" value="@Model.ValorCompra" />
+    </div>
+    <div class="mb-2">
+        <label>Valor de Revenda</label>
+        <input class="form-control" name="ValorRevenda" value="@Model.ValorRevenda" />
+    </div>
+    <div class="mb-2">
+        <label>Quantidade</label>
+        <input class="form-control" name="Quantidade" value="@Model.Quantidade" />
+    </div>
+    
+    <button class="btn btn-primary mt-2">Salvar</button>
+    <a href="/produto/index" class="btn btn-secondary mt-2">Cancelar</a>
+</form>

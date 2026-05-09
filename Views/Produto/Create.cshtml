@@ -1,0 +1,35 @@
+<h1 class="mb-3">Novo Produto</h1>
+
+<form action="/produto/create" method="POST">
+    <div class="mb-2">
+        <label>Código de Barras</label>
+        <input class="form-control" name="CodigoBarras" />
+    </div>
+    <div class="mb-2">
+        <label>Nome</label>
+        <input class="form-control" name="Nome" />
+    </div>
+    <div class="mb-2">
+        <label>Descrição</label>
+        <input class="form-control" name="Descricao" />
+    </div>
+    <div class="mb-2">
+        <label>Tamanho</label>
+        <input class="form-control" name="Tamanho" />
+    </div>
+    <div class="mb-2">
+        <label>Valor de Compra</label>
+        <input class="form-control" name="ValorCompra" />
+    </div>
+    <div class="mb-2">
+        <label>Valor de Revenda</label>
+        <input class="form-control" name="ValorRevenda" />
+    </div>
+    <div class="mb-2">
+        <label>Quantidade</label>
+        <input class="form-control" name="Quantidade" />
+    </div>
+    <button class="btn btn-success mt-2">Salvar</button>
+    <a href="/produto/index" class="btn btn-secondary mt-2">Cancelar</a>
+</form>
+</html>

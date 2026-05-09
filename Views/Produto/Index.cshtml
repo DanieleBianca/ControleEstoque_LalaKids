@@ -1,0 +1,36 @@
+<h1 class="mb-3">Produtos</h1>
+
+<!-- botão para ir para a tela de cadastro de novo produto -->
+<a href="/produto/create" class="btn btn-primary mb-3">Novo Produto</a>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Código de Barras</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Tamanho</th>
+        <th>Valor de Compra</th>
+        <th>Valor de Revenda</th>
+        <th>Quantidade</th>
+        <th>Ações</th>
+    </tr>
+    <!-- foreach percorre a lista de produtos enviada pelo controller e cria uma linha pra cada um -->
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.CodigoBarras</td>
+            <td>@p.Nome</td>
+            <td>@p.Descricao</td>
+            <td>@p.Tamanho</td>
+            <td>@p.ValorCompra</td>
+            <td>@p.ValorRevenda</td>
+            <td>@p.Quantidade</td>
+            <td>
+                <!-- botão editar: chama Update passando o Id do produto pela URL -->
+                <a href="/produto/update/@p.Id" class="btn btn-warning btn-sm">Editar</a>
+                <!-- botão excluir: chama Delete passando o Id do produto pela URL -->
+                <a href="/produto/delete/@p.Id" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+    }
+</table>
