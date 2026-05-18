@@ -1,59 +1,67 @@
 using Microsoft.AspNetCore.Mvc;
 
-public class ProdutoController : Controller //herança do controller; produto é uma entidade
+public class ProdutoController : Controller
 {
-    private DatabaseContext db; //atributo que apenas o controller acessa (pra acessar o bd)
+    private DatabaseContext db;
 
-    public ProdutoController(DatabaseContext db) //construtor - inj. de dep.: o controller recebe o bd como parâmetro, pra usar os dados do bd
-    
+    public ProdutoController(DatabaseContext db)
     {
         this.db = db;
     }
 
-    public ActionResult Index() //método do crud, READ - busca os produtos e manda pra view
+    private bool UsuarioLogado()
     {
-        return View(db.Produto.ToList());  //view.index.cshtml
+        return HttpContext.Session.GetString("UsuarioNome") != null;
     }
 
-    [HttpGet] //atributo do método, indica que ele responde a requisições get (abre a view)
-    public ActionResult Create() //método do crud, CREATE - mostra a view pra criar um produto
+    public ActionResult Index()
     {
-        return View();
-    }
-
-    [HttpPost] //atributo do método, indica que ele responde a requisições post (submete o formulário)
-    //data binding: os dados do formulário são convertidos em um objeto do tipo Produto e passados como parâmetro pro método
-    public ActionResult Create(Produto p) // método do crud, CREATE - recebe os dados do produto e salva no banco de dados
-    {
-        p.Id = Guid.NewGuid().ToString(); //gera id único pra cada produto
-        db.Produto.Add(p); //INSERT INTO Produto VALUES (p...)
-        db.SaveChanges(); //commit
-        return RedirectToAction("Index");
-    }
-
-    public ActionResult Delete(string id) //método do crud, DELETE - recebe o id do produto a ser deletado, busca no bd e deleta
-    {
-        var produto = db.Produto.Single(p => p.Id == id); //LinQ (busca produto com id igual ao recebido)
-        db.Produto.Remove(produto); //DELETE FROM Produto WHERE Id = id
-        db.SaveChanges();
-        return RedirectToAction("Index"); //após a ação, redireciona o usuário de volta pra lista
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        return View(db.Produto.ToList());
     }
 
     [HttpGet]
-    public ActionResult Update(string id) //método do crud, UPDATE - recebe o id do produto, busca no bd e mostra a view pra atualizar
+    public ActionResult Create()
     {
-        var produto = db.Produto.Single(p => p.Id == id); //LinQ; SELECT * FROM Produto WHERE Id = id
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Create(Produto p)
+    {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        p.Id = Guid.NewGuid().ToString();
+        db.Produto.Add(p);
+        db.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
+    public ActionResult Delete(string id)
+    {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        var produto = db.Produto.Single(p => p.Id == id);
+        db.Produto.Remove(produto);
+        db.SaveChanges();
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public ActionResult Update(string id)
+    {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        var produto = db.Produto.Single(p => p.Id == id);
         return View(produto);
     }
 
     [HttpPost]
-    public ActionResult Update(Produto p) //método do crud, UPDATE - recebe os dados do produto atualizado e salva no bd
+    public ActionResult Update(Produto p)
     {
-        db.Produto.Update(p); //UPDATE SET em todos os campos
-        db.SaveChanges(); //commit
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        db.Produto.Update(p);
+        db.SaveChanges();
         return RedirectToAction("Index");
     }
-
 
     [HttpGet]
     public ActionResult Movimentar()
