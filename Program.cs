@@ -17,4 +17,6 @@ app.UseSession();//parte de usuarios
 
 app.MapControllerRoute("default", "{controller=Produto}/{action=Index}/{id?}");
 
+app.MapControllerRoute("default", "{controller=Usuario}/{action=Login}/{id?}");
+
 app.Run();
