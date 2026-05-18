@@ -9,7 +9,11 @@ builder.Services
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddSession(); //parte de usuarios
+
 var app = builder.Build();
+
+app.UseSession();//parte de usuarios
 
 app.MapControllerRoute("default", "{controller=Produto}/{action=Index}/{id?}");
 
