@@ -53,4 +53,40 @@ public class ProdutoController : Controller //herança do controller; produto é
         db.SaveChanges(); //commit
         return RedirectToAction("Index");
     }
+
+
+    [HttpGet]
+    public ActionResult Movimentar()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    public ActionResult Movimentar(string codigoBarras, string tipo, int quantidade)
+    {
+        var produto = db.Produto.SingleOrDefault(p => p.CodigoBarras == codigoBarras);
+
+        if (produto == null)
+        {
+            TempData["Erro"] = "Produto não encontrado. Verifique o código de barras.";
+            return RedirectToAction("Movimentar");
+        }
+
+        if (tipo == "saida" && quantidade > produto.Quantidade)
+        {
+            TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produto.Quantidade} unidades.";
+            return RedirectToAction("Movimentar");
+        }
+
+        if (tipo == "entrada")
+            produto.Quantidade += quantidade;
+        else if (tipo == "saida")
+            produto.Quantidade -= quantidade;
+
+        db.Produto.Update(produto);
+        db.SaveChanges();
+
+        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} agora tem {produto.Quantidade} unidades.";
+        return RedirectToAction("Movimentar");
+    }
 }
