@@ -6,4 +6,6 @@ using Microsoft.EntityFrameworkCore;
         : base(options) {}
 
     public DbSet<Produto> Produto { get; set; } //tabela produto no banco de dados
+
+    public DbSet<Usuario> Usuario { get; set; } //tabela de usuario
     }
