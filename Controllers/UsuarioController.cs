@@ -44,6 +44,7 @@ public class UsuarioController : Controller
     {
         var usuario = db.Usuario
             .SingleOrDefault(u => u.Login == login && u.Senha == senha);
+            //.SingleOrDefault — igual ao .Single, mas retorna null se não encontrar 
 
         if (usuario == null)
         {
