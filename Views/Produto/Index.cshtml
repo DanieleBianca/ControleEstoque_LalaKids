@@ -1,9 +1,9 @@
-
-<!-- botão para ir para a tela de cadastro de novo produto e movimentar estoque-->
+<!-- botão para ir para a tela de cadastro de novo produto e movimentar estoque -->
 <h1 class="mb-3">Produtos</h1>
+
 <a href="/produto/create" class="btn btn-primary mb-3">Novo Produto</a>
 <a href="/produto/movimentar" class="btn btn-success mb-3">Movimentar Estoque</a>
-<a href="/usuario/logout" class="btn btn-danger mb-3">Sair</a>
+<a href="/Usuario/Index" class="btn btn-danger mb-3">Gerenciar Usuários</a>
 
 <table class="table table-bordered">
     <tr>
@@ -16,7 +16,6 @@
         <th>Quantidade</th>
         <th>Ações</th>
     </tr>
-    <!-- foreach percorre a lista de produtos enviada pelo controller e cria uma linha pra cada um -->
     @foreach (var p in Model)
     {
         <tr>
@@ -28,11 +27,15 @@
             <td>@p.ValorRevenda</td>
             <td>@p.Quantidade</td>
             <td>
-                <!-- botão editar: chama Update passando o Id do produto pela URL -->
                 <a href="/produto/update/@p.Id" class="btn btn-warning btn-sm">Editar</a>
-                <!-- botão excluir: chama Delete passando o Id do produto pela URL -->
                 <a href="/produto/delete/@p.Id" class="btn btn-danger btn-sm">Excluir</a>
             </td>
         </tr>
     }
 </table>
+
+<!-- botão sair fixado no canto inferior esquerdo -->
+<a href="/Usuario/Logout" class="btn btn-secondary"
+   style="position: fixed; bottom: 20px; left: 20px;">
+    Sair
+</a>
