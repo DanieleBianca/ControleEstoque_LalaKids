@@ -62,6 +62,7 @@ public class ProdutoController : Controller
         db.SaveChanges();
         return RedirectToAction("Index");
     }
+<<<<<<< HEAD
 
     [HttpGet]
     public ActionResult Movimentar()
@@ -98,3 +99,6 @@ public class ProdutoController : Controller
         return RedirectToAction("Movimentar");
     }
 }
+=======
+}
+>>>>>>> parent of d041192 (adiciona movimentar estoque)
