@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc;
 
 public class UsuarioController : Controller
 {
@@ -43,8 +43,7 @@ public class UsuarioController : Controller
     public ActionResult Login(string login, string senha)
     {
         var usuario = db.Usuario
-            .SingleOrDefault(u => u.Login == login && u.Senha == senha);
-            //.SingleOrDefault — igual ao .Single, mas retorna null se não encontrar 
+            .SingleOrDefault(u => u.Login == login && u.Senha == senha); //.SingleOrDefault — igual ao .Single, mas retorna null se não encontrar 
 
         if (usuario == null)
         {

@@ -1,18 +1,20 @@
-<h2>Login</h2>
+<h2 class="mb-3">Login</h2>
 
 @if (ViewBag.Erro != null)
 {
-    <p style="color:red">@ViewBag.Erro</p>
+    <div class="alert alert-danger">@ViewBag.Erro</div>
 }
 
 <form method="post">
-    <label>Login</label>
-    <input type="text" name="login" required />
-
-    <label>Senha</label>
-    <input type="password" name="senha" required />
-
-    <button type="submit">Entrar</button>
+    <div class="mb-2">
+        <label>Login</label>
+        <input class="form-control" type="text" name="login" required />
+    </div>
+    <div class="mb-2">
+        <label>Senha</label>
+        <input class="form-control" type="password" name="senha" required />
+    </div>
+    <button class="btn btn-primary mt-2">Entrar</button>
 </form>
 
-<a href="/Usuario/Cadastro">Não tem conta? Cadastre-se</a>
+<a href="/Usuario/Cadastro" class="btn btn-link mt-2">Não tem conta? Cadastre-se</a>
