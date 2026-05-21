@@ -11,13 +11,20 @@ public class ProdutoController : Controller //herança do controller; produto é
 
     public ActionResult Index() //método do crud, READ - busca os produtos e manda pra view
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");  // apenas usuarios logados acessam
         ViewBag.ProdutoTamanhos = db.ProdutoTamanho.ToList(); // passa os tamanhos pra view
         return View(db.Produto.ToList());
+    }
+
+    private bool UsuarioLogado()
+    {
+        return HttpContext.Session.GetString("UsuarioId") != null;
     }
 
     [HttpGet]
     public ActionResult Create()
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
         return View();
     }
 
@@ -49,6 +56,7 @@ public class ProdutoController : Controller //herança do controller; produto é
 
     public ActionResult Delete(string id) //método do crud, DELETE
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
         // remove os tamanhos do produto antes de remover o produto
         var tamanhos = db.ProdutoTamanho.Where(pt => pt.IdProduto == id).ToList();
         db.ProdutoTamanho.RemoveRange(tamanhos);
@@ -62,6 +70,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     [HttpGet]
     public ActionResult Update(string id) //método do crud, UPDATE
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
         var produto = db.Produto.Single(p => p.Id == id);
         // passa os tamanhos do produto pra view
         ViewBag.Tamanhos = db.ProdutoTamanho.Where(pt => pt.IdProduto == id).ToList();
@@ -92,12 +101,14 @@ public class ProdutoController : Controller //herança do controller; produto é
     [HttpGet]
     public ActionResult Movimentar()
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
         return View();
     }
 
     [HttpPost]
     public ActionResult Movimentar(string codigoBarras, string tamanho, int quantidade, string tipo)
     {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
         var produto = db.Produto.SingleOrDefault(p => p.CodigoBarras == codigoBarras);
 
         if (produto == null)
@@ -148,7 +159,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         var movimentacao = new Movimentacao
         {
             Id = Guid.NewGuid().ToString(),
-            IdUsuario = IdUsuario;  //que usuario movimentou
+            IdUsuario = idUsuario,  //que usuario movimentou
             IdProduto = produto.Id, // FK → Produto (relacionamento 1:N)
             Tamanho = tamanho,
             Quantidade = quantidade,
