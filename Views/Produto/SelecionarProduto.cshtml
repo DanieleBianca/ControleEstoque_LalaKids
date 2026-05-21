@@ -1,0 +1,24 @@
+<h1 class="mb-3">Histórico por Produto</h1>
+<a href="/produto/relatorios" class="btn btn-secondary mb-3">Voltar</a>
+
+<p>Selecione um produto para ver o histórico:</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Código de Barras</th>
+        <th>Nome</th>
+        <th></th>
+    </tr>
+    @foreach (var p in Model)
+    {
+        <tr>
+            <td>@p.CodigoBarras</td>
+            <td>@p.Nome</td>
+            <td>
+                <a href="/produto/relatorioHistoricoPorProduto?id=@p.Id" class="btn btn-info btn-sm">
+                    Ver Histórico
+                </a>
+            </td>
+        </tr>
+    }
+</table>

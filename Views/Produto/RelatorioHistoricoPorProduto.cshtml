@@ -1,0 +1,30 @@
+<!-- ViewBag.Produto tem o produto selecionado -->
+<h1 class="mb-3">Histórico de @ViewBag.Produto.Nome</h1>
+<a href="/produto/relatorioHistoricoPorProduto" class="btn btn-secondary mb-3">Voltar</a>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Data</th>
+        <th>Tamanho</th>
+        <th>Quantidade</th>
+        <th>Tipo</th>
+    </tr>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.Data.ToString("dd/MM/yyyy HH:mm")</td>
+            <td>@m.Tamanho</td>
+            <td>@m.Quantidade @(m.Quantidade <= 1 ? "unidade" : "unidades")</td>
+            <td>
+                @if (m.Tipo == "entrada")
+                {
+                    <span class="badge bg-success">Entrada</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Saída</span>
+                }
+            </td>
+        </tr>
+    }
+</table>

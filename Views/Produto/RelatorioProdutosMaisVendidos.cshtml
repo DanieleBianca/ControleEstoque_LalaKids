@@ -1,0 +1,18 @@
+<h1 class="mb-3">Produtos que Mais Saem</h1>
+<a href="/produto/relatorios" class="btn btn-secondary mb-3">Voltar</a>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Produto</th>
+        <th>Total de Saídas</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        var produto = ((List<Produto>)ViewBag.Produtos)
+            .SingleOrDefault(p => p.Id == item.IdProduto);
+        <tr>
+            <td>@(produto?.Nome ?? "Produto removido")</td>
+            <td>@item.TotalSaidas @(item.TotalSaidas <= 1 ? "unidade" : "unidades")</td>
+        </tr>
+    }
+</table>

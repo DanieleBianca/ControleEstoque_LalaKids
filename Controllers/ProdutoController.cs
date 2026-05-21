@@ -172,4 +172,63 @@ public class ProdutoController : Controller //herança do controller; produto é
         TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} tamanho {tamanho}.";
         return RedirectToAction("Movimentar");
     }
+
+    // abre a tela de seleção de relatórios
+    public ActionResult Relatorios()
+    {
+        return View();
+    }
+
+    // relatório: produtos que mais saem
+    public ActionResult RelatorioProdutosMaisVendidos()
+    {
+        // agrupa as movimentações de saída por produto e soma as quantidades
+        // isso é LINQ avançado: GroupBy agrupa, Sum soma, OrderByDescending ordena do maior pro menor
+        var resultado = db.Movimentacao
+            .Where(m => m.Tipo == "saida") // filtra só saídas
+            .GroupBy(m => m.IdProduto) // agrupa por produto
+            .Select(g => new {
+                IdProduto = g.Key,
+                TotalSaidas = g.Sum(m => m.Quantidade) // soma total de saídas
+            })
+            .OrderByDescending(x => x.TotalSaidas) // mais vendidos primeiro
+            .ToList();
+
+        ViewBag.Produtos = db.Produto.ToList();
+        return View(resultado);
+    }
+
+    // relatório: estoque baixo (tamanhos com quantidade menor ou igual a 2)
+    public ActionResult RelatorioEstoqueBaixo()
+    {
+        // busca tamanhos com quantidade baixa
+        var tamanhosBaixos = db.ProdutoTamanho
+            .Where(pt => pt.Quantidade <= 2) // limite de estoque baixo
+            .OrderBy(pt => pt.Quantidade) // os mais críticos primeiro
+            .ToList();
+
+        ViewBag.Produtos = db.Produto.ToList();
+        return View(tamanhosBaixos);
+    }
+
+    // relatório: histórico por produto — recebe o id do produto pela URL
+    public ActionResult RelatorioHistoricoPorProduto(string id)
+    {
+        // se não recebeu id, mostra lista de produtos para escolher
+        if (string.IsNullOrEmpty(id))
+        {
+            return View("SelecionarProduto", db.Produto.ToList());
+        }
+
+        var produto = db.Produto.Single(p => p.Id == id);
+
+        // busca todas as movimentações desse produto específico — relacionamento 1:N
+        var movimentacoes = db.Movimentacao
+            .Where(m => m.IdProduto == id)
+            .OrderByDescending(m => m.Data)
+            .ToList();
+
+        ViewBag.Produto = produto;
+        return View(movimentacoes);
+    }
 }

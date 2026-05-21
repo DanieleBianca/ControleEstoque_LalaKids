@@ -1,0 +1,37 @@
+@model List<ProdutoTamanho>
+
+<h1 class="mb-3">Estoque Baixo</h1>
+<a href="/produto/relatorios" class="btn btn-secondary mb-3">Voltar</a>
+
+<p class="text-muted">Tamanhos com 2 unidades ou menos.</p>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Produto</th>
+        <th>Tamanhos críticos</th>
+    </tr>
+    @foreach (var produto in (List<Produto>)ViewBag.Produtos)
+    {
+        <!-- busca os tamanhos baixos desse produto específico -->
+        var tamanhosDoProduto = Model
+            .Where(pt => pt.IdProduto == produto.Id)
+            .ToList();
+
+        <!-- só exibe o produto se tiver algum tamanho com estoque baixo -->
+        if (tamanhosDoProduto.Any())
+        {
+            <tr>
+                <td>@produto.Nome</td>
+                <td>
+                    <!-- lista todos os tamanhos críticos em uma célula só -->
+                    @foreach (var pt in tamanhosDoProduto)
+                    {
+                        <span class="badge @(pt.Quantidade == 0 ? "bg-danger" : "bg-warning text-dark") me-1">
+                            @pt.Tamanho: @pt.Quantidade @(pt.Quantidade <= 1 ? "unidade" : "unidades")
+                        </span>
+                    }
+                </td>
+            </tr>
+        }
+    }
+</table>
