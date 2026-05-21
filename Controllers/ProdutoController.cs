@@ -148,6 +148,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         var movimentacao = new Movimentacao
         {
             Id = Guid.NewGuid().ToString(),
+            IdUsuario = IdUsuario;  //que usuario movimentou
             IdProduto = produto.Id, // FK → Produto (relacionamento 1:N)
             Tamanho = tamanho,
             Quantidade = quantidade,
