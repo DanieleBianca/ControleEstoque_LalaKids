@@ -14,10 +14,6 @@
         <input class="form-control" name="Descricao" />
     </div>
     <div class="mb-2">
-        <label>Tamanho</label>
-        <input class="form-control" name="Tamanho" />
-    </div>
-    <div class="mb-2">
         <label>Valor de Compra</label>
         <input class="form-control" name="ValorCompra" />
     </div>
@@ -25,11 +21,35 @@
         <label>Valor de Revenda</label>
         <input class="form-control" name="ValorRevenda" />
     </div>
-    <div class="mb-2">
-        <label>Quantidade</label>
-        <input class="form-control" name="Quantidade" />
+
+    <!-- seção de tamanhos -->
+    <h5 class="mt-3">Tamanhos e Quantidades</h5>
+    <div id="tamanhos">
+        <div class="d-flex gap-2 mb-2">
+            <input class="form-control" name="Tamanhos[0]" placeholder="Tamanho (ex: P, 36...)" />
+            <input class="form-control" name="Quantidades[0]" type="number" placeholder="Quantidade" />
+        </div>
     </div>
+
+    <!-- botão para adicionar mais tamanhos dinamicamente -->
+    <button type="button" class="btn btn-secondary mb-3" onclick="adicionarTamanho()">+ Adicionar tamanho</button>
+
+    <br/>
     <button class="btn btn-success mt-2">Salvar</button>
     <a href="/produto/index" class="btn btn-secondary mt-2">Cancelar</a>
 </form>
-</html>
+
+<!-- script para adicionar campos de tamanho dinamicamente -->
+<script>
+    var contador = 1;
+    function adicionarTamanho() {
+        var div = document.createElement('div');
+        div.className = 'd-flex gap-2 mb-2';
+        div.innerHTML = `
+            <input class="form-control" name="Tamanhos[${contador}]" placeholder="Tamanho (ex: P, 36...)" />
+            <input class="form-control" name="Quantidades[${contador}]" type="number" placeholder="Quantidade" />
+        `;
+        document.getElementById('tamanhos').appendChild(div);
+        contador++;
+    }
+</script>

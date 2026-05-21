@@ -5,52 +5,87 @@ public class ProdutoController : Controller //herança do controller; produto é
     private DatabaseContext db; //atributo que apenas o controller acessa (pra acessar o bd)
 
     public ProdutoController(DatabaseContext db) //construtor - inj. de dep.: o controller recebe o bd como parâmetro, pra usar os dados do bd
-    
     {
         this.db = db;
     }
 
     public ActionResult Index() //método do crud, READ - busca os produtos e manda pra view
     {
-        return View(db.Produto.ToList());  //view.index.cshtml
+        ViewBag.ProdutoTamanhos = db.ProdutoTamanho.ToList(); // passa os tamanhos pra view
+        return View(db.Produto.ToList());
     }
 
-    [HttpGet] //atributo do método, indica que ele responde a requisições get (abre a view)
-    public ActionResult Create() //método do crud, CREATE - mostra a view pra criar um produto
+    [HttpGet]
+    public ActionResult Create()
     {
         return View();
     }
 
-    [HttpPost] //atributo do método, indica que ele responde a requisições post (submete o formulário)
-    //data binding: os dados do formulário são convertidos em um objeto do tipo Produto e passados como parâmetro pro método
-    public ActionResult Create(Produto p) // método do crud, CREATE - recebe os dados do produto e salva no banco de dados
+    [HttpPost]
+    public ActionResult Create(Produto p, string[] Tamanhos, int[] Quantidades)
     {
-        p.Id = Guid.NewGuid().ToString(); //gera id único pra cada produto
-        db.Produto.Add(p); //INSERT INTO Produto VALUES (p...)
-        db.SaveChanges(); //commit
+        p.Id = Guid.NewGuid().ToString(); // gera id único pro produto
+        db.Produto.Add(p); // salva o produto
+
+        // percorre os tamanhos e quantidades e salva cada um
+        for (int i = 0; i < Tamanhos.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(Tamanhos[i])) // ignora campos vazios
+            {
+                var pt = new ProdutoTamanho
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    IdProduto = p.Id,
+                    Tamanho = Tamanhos[i],
+                    Quantidade = Quantidades[i]
+                };
+                db.ProdutoTamanho.Add(pt); // salva o tamanho
+            }
+        }
+
+        db.SaveChanges(); // commit de tudo junto
         return RedirectToAction("Index");
     }
 
-    public ActionResult Delete(string id) //método do crud, DELETE - recebe o id do produto a ser deletado, busca no bd e deleta
+    public ActionResult Delete(string id) //método do crud, DELETE
     {
-        var produto = db.Produto.Single(p => p.Id == id); //LinQ (busca produto com id igual ao recebido)
-        db.Produto.Remove(produto); //DELETE FROM Produto WHERE Id = id
+        // remove os tamanhos do produto antes de remover o produto
+        var tamanhos = db.ProdutoTamanho.Where(pt => pt.IdProduto == id).ToList();
+        db.ProdutoTamanho.RemoveRange(tamanhos);
+
+        var produto = db.Produto.Single(p => p.Id == id);
+        db.Produto.Remove(produto);
         db.SaveChanges();
-        return RedirectToAction("Index"); //após a ação, redireciona o usuário de volta pra lista
+        return RedirectToAction("Index");
     }
 
     [HttpGet]
-    public ActionResult Update(string id) //método do crud, UPDATE - recebe o id do produto, busca no bd e mostra a view pra atualizar
+    public ActionResult Update(string id) //método do crud, UPDATE
     {
-        var produto = db.Produto.Single(p => p.Id == id); //LinQ; SELECT * FROM Produto WHERE Id = id
+        var produto = db.Produto.Single(p => p.Id == id);
+        // passa os tamanhos do produto pra view
+        ViewBag.Tamanhos = db.ProdutoTamanho.Where(pt => pt.IdProduto == id).ToList();
         return View(produto);
     }
 
     [HttpPost]
-    public ActionResult Update(Produto p) //método do crud, UPDATE - recebe os dados do produto atualizado e salva no bd
+    public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
     {
-        db.Produto.Update(p); //UPDATE SET em todos os campos
-        db.SaveChanges(); //commit
+        db.Produto.Update(p); // atualiza os dados do produto
+
+        // atualiza os tamanhos existentes
+        for (int i = 0; i < TamanhoIds.Length; i++)
+        {
+            if (!string.IsNullOrEmpty(TamanhoIds[i]))
+            {
+                var pt = db.ProdutoTamanho.Single(x => x.Id == TamanhoIds[i]);
+                pt.Tamanho = Tamanhos[i];
+                pt.Quantidade = Quantidades[i];
+                db.ProdutoTamanho.Update(pt);
+            }
+        }
+
+        db.SaveChanges();
         return RedirectToAction("Index");
     }
 
@@ -61,7 +96,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     }
 
     [HttpPost]
-    public ActionResult Movimentar(string codigoBarras, string tipo, int quantidade)
+    public ActionResult Movimentar(string codigoBarras, string tamanho, int quantidade, string tipo)
     {
         var produto = db.Produto.SingleOrDefault(p => p.CodigoBarras == codigoBarras);
 
@@ -71,21 +106,46 @@ public class ProdutoController : Controller //herança do controller; produto é
             return RedirectToAction("Movimentar");
         }
 
-        if (tipo == "saida" && quantidade > produto.Quantidade)
+        var produtoTamanho = db.ProdutoTamanho
+            .SingleOrDefault(pt => pt.IdProduto == produto.Id && pt.Tamanho == tamanho);
+
+        // se tamanho não existe e é entrada, cria automaticamente
+        if (produtoTamanho == null && tipo == "entrada")
         {
-            TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produto.Quantidade} unidades.";
+            produtoTamanho = new ProdutoTamanho
+            {
+                Id = Guid.NewGuid().ToString(),
+                IdProduto = produto.Id,
+                Tamanho = tamanho,
+                Quantidade = quantidade
+            };
+            db.ProdutoTamanho.Add(produtoTamanho);
+            db.SaveChanges();
+            TempData["Sucesso"] = $"Tamanho {tamanho} criado! {produto.Nome} agora tem {quantidade} unidades.";
+            return RedirectToAction("Movimentar");
+        }
+
+        if (produtoTamanho == null && tipo == "saida")
+        {
+            TempData["Erro"] = "Tamanho não encontrado para esse produto.";
+            return RedirectToAction("Movimentar");
+        }
+
+        if (tipo == "saida" && quantidade > produtoTamanho.Quantidade)
+        {
+            TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produtoTamanho.Quantidade} unidades.";
             return RedirectToAction("Movimentar");
         }
 
         if (tipo == "entrada")
-            produto.Quantidade += quantidade;
+            produtoTamanho.Quantidade += quantidade;
         else if (tipo == "saida")
-            produto.Quantidade -= quantidade;
+            produtoTamanho.Quantidade -= quantidade;
 
-        db.Produto.Update(produto);
+        db.ProdutoTamanho.Update(produtoTamanho);
         db.SaveChanges();
 
-        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} agora tem {produto.Quantidade} unidades.";
+        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} tamanho {tamanho} agora tem {produtoTamanho.Quantidade} unidades.";
         return RedirectToAction("Movimentar");
     }
 }

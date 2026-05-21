@@ -4,8 +4,6 @@ public class Produto //classe que representa um produto, com propriedades e dado
     public string CodigoBarras { get; set; } = "";
     public string Nome { get; set; } = "";
     public string Descricao { get; set; } = "";
-    public string Tamanho { get; set; } = "";
     public decimal ValorCompra { get; set; } = 0;
     public decimal ValorRevenda { get; set; } = 0;
-    public int Quantidade { get; set; } = 0;
 }

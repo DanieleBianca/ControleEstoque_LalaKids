@@ -1,38 +1,66 @@
-
-<!-- botão para ir para a tela de cadastro de novo produto e movimentar estoque-->
 <h1 class="mb-3">Produtos</h1>
+
 <a href="/produto/create" class="btn btn-primary mb-3">Novo Produto</a>
 <a href="/produto/movimentar" class="btn btn-success mb-3">Movimentar Estoque</a>
-<a href="/usuario/logout" class="btn btn-danger mb-3">Sair</a>
+<a href="/Usuario/Index" class="btn btn-danger mb-3">Gerenciar Usuários</a>
 
 <table class="table table-bordered">
     <tr>
         <th>Código de Barras</th>
         <th>Nome</th>
         <th>Descrição</th>
-        <th>Tamanho</th>
         <th>Valor de Compra</th>
         <th>Valor de Revenda</th>
-        <th>Quantidade</th>
         <th>Ações</th>
     </tr>
-    <!-- foreach percorre a lista de produtos enviada pelo controller e cria uma linha pra cada um -->
     @foreach (var p in Model)
     {
+        <!-- linha principal do produto -->
         <tr>
             <td>@p.CodigoBarras</td>
-            <td>@p.Nome</td>
+            <td>
+                <!-- botão que expande os tamanhos ao clicar -->
+                <a data-bs-toggle="collapse" href="#tamanhos-@p.Id" style="cursor:pointer">
+                    @p.Nome
+                </a>
+            </td>
             <td>@p.Descricao</td>
-            <td>@p.Tamanho</td>
             <td>@p.ValorCompra</td>
             <td>@p.ValorRevenda</td>
-            <td>@p.Quantidade</td>
             <td>
-                <!-- botão editar: chama Update passando o Id do produto pela URL -->
                 <a href="/produto/update/@p.Id" class="btn btn-warning btn-sm">Editar</a>
-                <!-- botão excluir: chama Delete passando o Id do produto pela URL -->
                 <a href="/produto/delete/@p.Id" class="btn btn-danger btn-sm">Excluir</a>
+            </td>
+        </tr>
+        <!-- linha colapsável com os tamanhos -->
+        <tr class="collapse" id="tamanhos-@p.Id">
+            <td colspan="6">
+                <table class="table table-sm mb-0">
+                    <tr>
+                        <th>Tamanho</th>
+                        <th>Quantidade</th>
+                    </tr>
+                    @foreach (var pt in (List<ProdutoTamanho>)ViewBag.ProdutoTamanhos)
+                    {
+                        if (pt.IdProduto == p.Id)
+                        {
+                            <tr>
+                                <td>@pt.Tamanho</td>
+                                <td>@pt.Quantidade</td>
+                            </tr>
+                        }
+                    }
+                </table>
             </td>
         </tr>
     }
 </table>
+
+<!-- botão sair fixado no canto inferior esquerdo -->
+<a href="/Usuario/Logout" class="btn btn-secondary"
+   style="position: fixed; bottom: 20px; left: 20px;">
+    Sair
+</a>
+
+<!-- script do Bootstrap para funcionar o collapse -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

@@ -1,4 +1,4 @@
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 public class UsuarioController : Controller
 {
@@ -43,7 +43,7 @@ public class UsuarioController : Controller
     public ActionResult Login(string login, string senha)
     {
         var usuario = db.Usuario
-            .SingleOrDefault(u => u.Login == login && u.Senha == senha); //.SingleOrDefault — igual ao .Single, mas retorna null se não encontrar 
+            .SingleOrDefault(u => u.Login == login && u.Senha == senha);
 
         if (usuario == null)
         {
@@ -62,7 +62,7 @@ public class UsuarioController : Controller
         return RedirectToAction("Login");
     }
 
-    //Deleta usuario cadastrado
+    //Deleta usuario
     public ActionResult Delete(string id)
     {
     var usuario = db.Usuario.Single(u => u.Id == id);
