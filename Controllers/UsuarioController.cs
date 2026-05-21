@@ -52,6 +52,7 @@ public class UsuarioController : Controller
         }
 
         HttpContext.Session.SetString("UsuarioNome", usuario.Nome); //salva o nome do usuário na sessão para usar nas telas
+        HttpContext.Session.SetString("UsuarioId", usuario.Id); // salva o id na sessão
         return RedirectToAction("Index", "Produto");
     }
 

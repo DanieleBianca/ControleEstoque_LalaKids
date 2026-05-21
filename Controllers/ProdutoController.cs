@@ -120,32 +120,44 @@ public class ProdutoController : Controller //herança do controller; produto é
                 Quantidade = quantidade
             };
             db.ProdutoTamanho.Add(produtoTamanho);
-            db.SaveChanges();
-            TempData["Sucesso"] = $"Tamanho {tamanho} criado! {produto.Nome} agora tem {quantidade} unidades.";
-            return RedirectToAction("Movimentar");
         }
-
-        if (produtoTamanho == null && tipo == "saida")
+        else if (produtoTamanho == null && tipo == "saida")
         {
             TempData["Erro"] = "Tamanho não encontrado para esse produto.";
             return RedirectToAction("Movimentar");
         }
-
-        if (tipo == "saida" && quantidade > produtoTamanho.Quantidade)
+        else
         {
-            TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produtoTamanho.Quantidade} unidades.";
-            return RedirectToAction("Movimentar");
+            if (tipo == "saida" && quantidade > produtoTamanho.Quantidade)
+            {
+                TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produtoTamanho.Quantidade} unidades.";
+                return RedirectToAction("Movimentar");
+            }
+
+            if (tipo == "entrada")
+                produtoTamanho.Quantidade += quantidade;
+            else if (tipo == "saida")
+                produtoTamanho.Quantidade -= quantidade;
+
+            db.ProdutoTamanho.Update(produtoTamanho);
         }
 
-        if (tipo == "entrada")
-            produtoTamanho.Quantidade += quantidade;
-        else if (tipo == "saida")
-            produtoTamanho.Quantidade -= quantidade;
+        var idUsuario = HttpContext.Session.GetString("UsuarioId") ?? "";
 
-        db.ProdutoTamanho.Update(produtoTamanho);
+        // salva o histórico da movimentação
+        var movimentacao = new Movimentacao
+        {
+            Id = Guid.NewGuid().ToString(),
+            IdProduto = produto.Id, // FK → Produto (relacionamento 1:N)
+            Tamanho = tamanho,
+            Quantidade = quantidade,
+            Tipo = tipo,
+            Data = DateTime.Now
+        };
+        db.Movimentacao.Add(movimentacao);
         db.SaveChanges();
 
-        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} tamanho {tamanho} agora tem {produtoTamanho.Quantidade} unidades.";
+        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} tamanho {tamanho}.";
         return RedirectToAction("Movimentar");
     }
 }
