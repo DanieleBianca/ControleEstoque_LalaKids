@@ -44,6 +44,15 @@ public class ProdutoController : Controller //herança do controller; produto é
     [HttpPost]
     public ActionResult Create(Produto p, string[] Tamanhos, int[] Quantidades)
     {
+        // verifica se já existe produto com esse código de barras
+        var existe = db.Produto.Any(x => x.CodigoBarras == p.CodigoBarras);
+        if (existe)
+        {
+            TempData["Erro"] = "Código de barras ja cadastrado.";
+            return RedirectToAction("Create");
+        }
+
+    p.Id = Guid.NewGuid().ToString();
         p.Id = Guid.NewGuid().ToString(); // gera id único pro produto
         db.Produto.Add(p); // salva o produto
 
