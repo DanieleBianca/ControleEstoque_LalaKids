@@ -27,7 +27,7 @@
     <div id="tamanhos">
         <div class="d-flex gap-2 mb-2">
             <input class="form-control" name="Tamanhos[0]" placeholder="Tamanho (ex: P, 36...)" />
-            <input class="form-control" name="Quantidades[0]" type="number" placeholder="Quantidade" />
+            <input class="form-control" name="Quantidades[0]" type="number" min="0" placeholder="Quantidade" />
         </div>
     </div>
 
@@ -47,7 +47,7 @@
         div.className = 'd-flex gap-2 mb-2';
         div.innerHTML = `
             <input class="form-control" name="Tamanhos[${contador}]" placeholder="Tamanho (ex: P, 36...)" />
-            <input class="form-control" name="Quantidades[${contador}]" type="number" placeholder="Quantidade" />
+            <input class="form-control" name="Quantidades[${contador}]" type="number" min="0" placeholder="Quantidade" />
         `;
         document.getElementById('tamanhos').appendChild(div);
         contador++;
