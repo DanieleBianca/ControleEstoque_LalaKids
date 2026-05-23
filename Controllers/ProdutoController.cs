@@ -9,12 +9,25 @@ public class ProdutoController : Controller //herança do controller; produto é
         this.db = db;
     }
 
-    public ActionResult Index() //método do crud, READ - busca os produtos e manda pra view
+    public ActionResult Index(string busca) //método do crud, READ - busca os produtos e manda pra view
     {
         if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");  // apenas usuarios logados acessam
         ViewBag.ProdutoTamanhos = db.ProdutoTamanho.ToList(); // passa os tamanhos pra view
-        return View(db.Produto.ToList());
-    }
+        ViewBag.Busca = busca;
+
+        var produtos = db.Produto.ToList();
+        if (!string. IsNullOrEmpty(busca)) 
+        {
+            produtos = produtos.Where(p =>
+                p.Nome.Contains(busca, StringComparison.OrdinalIgnoreCase) ||
+                p.CodigoBarras.Contains(busca, StringComparison.OrdinalIgnoreCase)
+            ).ToList();
+        }
+
+
+    return View(produtos);
+}
+    
 
     private bool UsuarioLogado()
     {

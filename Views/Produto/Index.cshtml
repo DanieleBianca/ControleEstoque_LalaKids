@@ -8,56 +8,86 @@
 <a href="/Usuario/Index" class="btn btn-danger mb-3">Gerenciar Usuários</a>
 <a href="/produto/relatorios" class="btn btn-info mb-3">Relatórios</a>
 
-<table class="table table-bordered">
-    <tr>
-        <th>Código de Barras</th>
-        <th>Nome</th>
-        <th>Descrição</th>
-        <th>Valor de Compra</th>
-        <th>Valor de Revenda</th>
-        <th>Ações</th>
-    </tr>
-    @foreach (var p in Model)
+<form method="get" action="/produto/index" class="d-flex gap-2 mb-3">
+    <input class="form-control"
+           name="busca"
+        placeholder="Digite o nome"
+           value="@ViewBag.Busca" />
+    <button class="btn btn-outline-secondary">Buscar</button>
+    <a href="/produto/index" class="btn btn-outline-danger">Limpar</a>
+</form>
+
+@* mensagem de erro ou tabela*@
+@if (!Model.Any())
+{
+    @if (!string.IsNullOrEmpty(ViewBag.Busca as string))
     {
-        var ordemTamanhos = new List<string> { "0", "2", "4", "6", "8", "10", "12", "14", "16", "18", "PP", "P", "M", "G", "GG" };
-
-        var tamanhosDoProduto = ((List<ProdutoTamanho>)ViewBag.ProdutoTamanhos)
-            .Where(pt => pt.IdProduto == p.Id)
-            .OrderBy(pt => {
-                var idx = ordemTamanhos.IndexOf(pt.Tamanho);
-                return idx == -1 ? 999 : idx;
-            })
-            .ToList();
-
-        var conteudoPopover = tamanhosDoProduto.Any()
-            ? string.Join("<br/>", tamanhosDoProduto.Select(pt =>
-                $"{pt.Tamanho}: {pt.Quantidade} {(pt.Quantidade <= 1 ? "unidade" : "unidades")}"))
-            : "Sem tamanhos cadastrados";
-
-        <tr>
-            <td>@p.CodigoBarras</td>
-            <td>
-                <span
-                    data-bs-toggle="popover"
-                    data-bs-trigger="hover focus"
-                    data-bs-placement="right"
-                    data-bs-html="true"
-                    data-bs-title="Tamanhos"
-                    data-bs-content="@conteudoPopover"
-                    style="cursor:pointer; text-decoration: underline;">
-                    @p.Nome
-                </span>
-            </td>
-            <td>@p.Descricao</td>
-            <td>@p.ValorCompra</td>
-            <td>@p.ValorRevenda</td>
-            <td>
-                <a href="/produto/update/@p.Id" class="btn btn-warning btn-sm">Editar</a>
-                <a href="/produto/delete/@p.Id" class="btn btn-danger btn-sm">Excluir</a>
-            </td>
-        </tr>
+        <div class="alert alert-warning mt-2">
+            Nenhum produto encontrado para "<strong>@ViewBag.Busca</strong>".
+        </div>
     }
-</table>
+    else
+    {
+        <div class="alert alert-info mt-2">
+            Nenhum produto cadastrado ainda.
+        </div>
+    }
+}
+
+else
+{
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Código de Barras</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Valor de Compra</th>
+            <th>Valor de Revenda</th>
+            <th>Ações</th>
+        </tr>
+        @foreach (var p in Model)
+        {
+            var ordemTamanhos = new List<string> { "0", "2", "4", "6", "8", "10", "12", "14", "16", "18", "PP", "P", "M", "G", "GG" };
+
+            var tamanhosDoProduto = ((List<ProdutoTamanho>)ViewBag.ProdutoTamanhos)
+                .Where(pt => pt.IdProduto == p.Id)
+                .OrderBy(pt => {
+                    var idx = ordemTamanhos.IndexOf(pt.Tamanho);
+                    return idx == -1 ? 999 : idx;
+                })
+                .ToList();
+
+            var conteudoPopover = tamanhosDoProduto.Any()
+                ? string.Join("<br/>", tamanhosDoProduto.Select(pt =>
+                    $"{pt.Tamanho}: {pt.Quantidade} {(pt.Quantidade <= 1 ? "unidade" : "unidades")}"))
+                : "Sem tamanhos cadastrados";
+
+            <tr>
+                <td>@p.CodigoBarras</td>
+                <td>
+                    <span
+                        data-bs-toggle="popover"
+                        data-bs-trigger="hover focus"
+                        data-bs-placement="right"
+                        data-bs-html="true"
+                        data-bs-title="Tamanhos"
+                        data-bs-content="@conteudoPopover"
+                        style="cursor:pointer; text-decoration: underline;">
+                        @p.Nome
+                    </span>
+                </td>
+                <td>@p.Descricao</td>
+                <td>@p.ValorCompra</td>
+                <td>@p.ValorRevenda</td>
+                <td>
+                    <a href="/produto/update/@p.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a href="/produto/delete/@p.Id" class="btn btn-danger btn-sm">Excluir</a>
+                </td>
+            </tr>
+        }
+    </table>
+}
 
 <a href="/Usuario/Logout" class="btn btn-secondary"
    style="position: fixed; bottom: 20px; left: 20px;">
