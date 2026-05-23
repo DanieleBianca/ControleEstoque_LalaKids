@@ -99,26 +99,40 @@ public class ProdutoController : Controller //herança do controller; produto é
         return View(produto);
     }
 
-    [HttpPost]
-    public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
+   [HttpPost]
+public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
+{
+    if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+    
+    db.Produto.Update(p);
+
+    for (int i = 0; i < TamanhoIds.Length; i++)
     {
-        db.Produto.Update(p); // atualiza os dados do produto
-
-        // atualiza os tamanhos existentes
-        for (int i = 0; i < TamanhoIds.Length; i++)
+        if (!string.IsNullOrEmpty(TamanhoIds[i]))
         {
-            if (!string.IsNullOrEmpty(TamanhoIds[i]))
-            {
-                var pt = db.ProdutoTamanho.Single(x => x.Id == TamanhoIds[i]);
-                pt.Tamanho = Tamanhos[i];
-                pt.Quantidade = Quantidades[i];
-                db.ProdutoTamanho.Update(pt);
-            }
+            // tamanho já existe — atualiza
+            var pt = db.ProdutoTamanho.Single(x => x.Id == TamanhoIds[i]);
+            pt.Tamanho = Tamanhos[i];
+            pt.Quantidade = Quantidades[i];
+            db.ProdutoTamanho.Update(pt);
         }
-
-        db.SaveChanges();
-        return RedirectToAction("Index");
+        else if (!string.IsNullOrEmpty(Tamanhos[i]))
+        {
+            // tamanho novo — cria
+            var pt = new ProdutoTamanho
+            {
+                Id = Guid.NewGuid().ToString(),
+                IdProduto = p.Id,
+                Tamanho = Tamanhos[i],
+                Quantidade = Quantidades[i]
+            };
+            db.ProdutoTamanho.Add(pt);
+        }
     }
+
+    db.SaveChanges();
+    return RedirectToAction("Index");
+}
 
     [HttpGet]
     public ActionResult Movimentar()
@@ -128,21 +142,32 @@ public class ProdutoController : Controller //herança do controller; produto é
     }
 
     [HttpPost]
-    public ActionResult Movimentar(string codigoBarras, string tamanho, int quantidade, string tipo)
+public ActionResult Movimentar(string[] CodigosBarras, string[] Tamanhos, int[] Quantidades, string tipo)
+{
+    if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+
+    var idUsuario = HttpContext.Session.GetString("UsuarioId") ?? "";
+    var erros = new List<string>();
+
+    for (int i = 0; i < CodigosBarras.Length; i++)
     {
-        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
-        var produto = db.Produto.SingleOrDefault(p => p.CodigoBarras == codigoBarras);
+        if (string.IsNullOrEmpty(CodigosBarras[i])) continue;
+
+        var codigoBarras = CodigosBarras[i];
+        var tamanho = Tamanhos[i];
+        var quantidade = Quantidades[i];
+
+        var produto = db.Produto.FirstOrDefault(p => p.CodigoBarras == codigoBarras);
 
         if (produto == null)
         {
-            TempData["Erro"] = "Produto não encontrado. Verifique o código de barras.";
-            return RedirectToAction("Movimentar");
+            erros.Add($"Produto '{codigoBarras}' não encontrado.");
+            continue;
         }
 
         var produtoTamanho = db.ProdutoTamanho
-            .SingleOrDefault(pt => pt.IdProduto == produto.Id && pt.Tamanho == tamanho);
+            .FirstOrDefault(pt => pt.IdProduto == produto.Id && pt.Tamanho == tamanho);
 
-        // se tamanho não existe e é entrada, cria automaticamente
         if (produtoTamanho == null && tipo == "entrada")
         {
             produtoTamanho = new ProdutoTamanho
@@ -156,45 +181,46 @@ public class ProdutoController : Controller //herança do controller; produto é
         }
         else if (produtoTamanho == null && tipo == "saida")
         {
-            TempData["Erro"] = "Tamanho não encontrado para esse produto.";
-            return RedirectToAction("Movimentar");
+            erros.Add($"Tamanho '{tamanho}' não encontrado para '{produto.Nome}'.");
+            continue;
         }
         else
         {
             if (tipo == "saida" && quantidade > produtoTamanho.Quantidade)
             {
-                TempData["Erro"] = $"Quantidade insuficiente. Estoque atual: {produtoTamanho.Quantidade} unidades.";
-                return RedirectToAction("Movimentar");
+                erros.Add($"Estoque insuficiente para '{produto.Nome}' tamanho {tamanho}. Disponível: {produtoTamanho.Quantidade}.");
+                continue;
             }
 
             if (tipo == "entrada")
                 produtoTamanho.Quantidade += quantidade;
-            else if (tipo == "saida")
+            else
                 produtoTamanho.Quantidade -= quantidade;
 
             db.ProdutoTamanho.Update(produtoTamanho);
         }
 
-        var idUsuario = HttpContext.Session.GetString("UsuarioId") ?? "";
-
-        // salva o histórico da movimentação
-        var movimentacao = new Movimentacao
+        db.Movimentacao.Add(new Movimentacao
         {
             Id = Guid.NewGuid().ToString(),
-            IdUsuario = idUsuario,  //que usuario movimentou
-            IdProduto = produto.Id, // FK → Produto (relacionamento 1:N)
+            IdUsuario = idUsuario,
+            IdProduto = produto.Id,
             Tamanho = tamanho,
             Quantidade = quantidade,
             Tipo = tipo,
             Data = DateTime.Now
-        };
-        db.Movimentacao.Add(movimentacao);
-        db.SaveChanges();
-
-        TempData["Sucesso"] = $"Estoque atualizado! {produto.Nome} tamanho {tamanho}.";
-        return RedirectToAction("Movimentar");
+        });
     }
 
+    db.SaveChanges();
+
+    if (erros.Any())
+        TempData["Erro"] = string.Join(" | ", erros);
+    else
+        TempData["Sucesso"] = "Estoque atualizado com sucesso!";
+
+    return RedirectToAction("Movimentar");
+}
     // abre a tela de seleção de relatórios
     public ActionResult Relatorios()
     {
