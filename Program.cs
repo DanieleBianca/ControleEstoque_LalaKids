@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore; //biblioteca para trabalhar com entity do b
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connStr = "Server=DANIELEBIANCA\\SQLEXPRESS;Database=BDLalaKids;Trusted_Connection=True;TrustServerCertificate=True";
+string connStr = "Server=localhost\\SQLEXPRESS01;Database=BDLalaKids;Trusted_Connection=True;TrustServerCertificate=True";
 
 
 builder.Services
