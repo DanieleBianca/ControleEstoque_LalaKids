@@ -26,12 +26,12 @@ public class ProdutoController : Controller //herança do controller; produto é
 
 
     return View(produtos);
-}
+    }
     
 
-    private bool UsuarioLogado()
+    private bool UsuarioLogado() 
     {
-        return HttpContext.Session.GetString("UsuarioId") != null;
+        return HttpContext.Session.GetString("UsuarioId") != null; 
     }
 
     [HttpGet]
@@ -52,7 +52,6 @@ public class ProdutoController : Controller //herança do controller; produto é
             return RedirectToAction("Create");
         }
 
-    p.Id = Guid.NewGuid().ToString();
         p.Id = Guid.NewGuid().ToString(); // gera id único pro produto
         db.Produto.Add(p); // salva o produto
 
@@ -99,9 +98,9 @@ public class ProdutoController : Controller //herança do controller; produto é
         return View(produto);
     }
 
-   [HttpPost]
-public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
-{
+    [HttpPost]
+    public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
+    {
     if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
     
     db.Produto.Update(p);
@@ -142,8 +141,8 @@ public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, stri
     }
 
     [HttpPost]
-public ActionResult Movimentar(string[] CodigosBarras, string[] Tamanhos, int[] Quantidades, string tipo)
-{
+    public ActionResult Movimentar(string[] CodigosBarras, string[] Tamanhos, int[] Quantidades, string tipo)
+    {
     if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
 
     var idUsuario = HttpContext.Session.GetString("UsuarioId") ?? "";
