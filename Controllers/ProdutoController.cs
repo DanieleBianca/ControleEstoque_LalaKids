@@ -148,6 +148,15 @@ public class ProdutoController : Controller //herança do controller; produto é
     var idUsuario = HttpContext.Session.GetString("UsuarioId") ?? "";
     var erros = new List<string>();
 
+    var movimentacao = new Movimentacao
+    {
+        Id = Guid.NewGuid().ToString(),
+        IdUsuario = idUsuario,
+        Tipo = tipo,
+        Data = DateTime.Now
+    };
+db.Movimentacao.Add(movimentacao);
+
     for (int i = 0; i < CodigosBarras.Length; i++)
     {
         if (string.IsNullOrEmpty(CodigosBarras[i])) continue;
@@ -199,15 +208,13 @@ public class ProdutoController : Controller //herança do controller; produto é
             db.ProdutoTamanho.Update(produtoTamanho);
         }
 
-        db.Movimentacao.Add(new Movimentacao
+        db.MovimentacaoItem.Add(new MovimentacaoItem
         {
             Id = Guid.NewGuid().ToString(),
-            IdUsuario = idUsuario,
+            IdMovimentacao = movimentacao.Id,
             IdProduto = produto.Id,
             Tamanho = tamanho,
-            Quantidade = quantidade,
-            Tipo = tipo,
-            Data = DateTime.Now
+            Quantidade = quantidade
         });
     }
 
@@ -231,15 +238,16 @@ public class ProdutoController : Controller //herança do controller; produto é
     {
         // agrupa as movimentações de saída por produto e soma as quantidades
         // isso é LINQ avançado: GroupBy agrupa, Sum soma, OrderByDescending ordena do maior pro menor
-        var resultado = db.Movimentacao
-            .Where(m => m.Tipo == "saida") // filtra só saídas
-            .GroupBy(m => m.IdProduto) // agrupa por produto
+        var resultado = db.MovimentacaoItem
+            .Where(mi => db.Movimentacao
+                .Any(m => m.Id == mi.IdMovimentacao && m.Tipo == "saida"))
+            .GroupBy(mi => mi.IdProduto)
             .Select(g => new {
                 IdProduto = g.Key,
-                TotalSaidas = g.Sum(m => m.Quantidade) // soma total de saídas
+                TotalSaidas = g.Sum(mi => mi.Quantidade)
             })
-            .OrderByDescending(x => x.TotalSaidas) // mais vendidos primeiro
-            .ToList();
+        .OrderByDescending(x => x.TotalSaidas)
+        .ToList();
 
         ViewBag.Produtos = db.Produto.ToList();
         return View(resultado);
@@ -270,12 +278,25 @@ public class ProdutoController : Controller //herança do controller; produto é
         var produto = db.Produto.Single(p => p.Id == id);
 
         // busca todas as movimentações desse produto específico — relacionamento 1:N
-        var movimentacoes = db.Movimentacao
-            .Where(m => m.IdProduto == id)
-            .OrderByDescending(m => m.Data)
+        var movimentacoes = db.MovimentacaoItem
+            .Where(mi => mi.IdProduto == id)
             .ToList();
 
         ViewBag.Produto = produto;
+        return View(movimentacoes);
+    }
+
+    // relatório: histórico de todas as movimentações com seus itens
+    public ActionResult RelatorioHistoricoMovimentacoes()
+    {
+        var movimentacoes = db.Movimentacao
+            .OrderByDescending(m => m.Data)
+            .ToList();
+
+        ViewBag.Itens = db.MovimentacaoItem.ToList();
+        ViewBag.Produtos = db.Produto.ToList();
+        ViewBag.Usuarios = db.Usuario.ToList();
+
         return View(movimentacoes);
     }
 }

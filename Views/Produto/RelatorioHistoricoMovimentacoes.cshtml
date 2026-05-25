@@ -1,0 +1,49 @@
+@model List<Movimentacao>
+
+<h1 class="mb-4">Histórico de Movimentações</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nenhuma movimentação registrada ainda.</div>
+}
+else
+{
+    @foreach (var m in Model)
+    {
+        var usuario = ((List<Usuario>)ViewBag.Usuarios)
+            .FirstOrDefault(u => u.Id == m.IdUsuario);
+
+        var itens = ((List<MovimentacaoItem>)ViewBag.Itens)
+            .Where(i => i.IdMovimentacao == m.Id)
+            .ToList();
+
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>@m.Data.ToString("dd/MM/yyyy HH:mm")</strong>
+                — @(m.Tipo == "entrada" ? "Entrada" : "Saída")
+                — <span class="text-muted">@(usuario?.Nome ?? "Usuário desconhecido")</span>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Tamanho</th>
+                        <th>Quantidade</th>
+                    </tr>
+                    @foreach (var item in itens)
+                    {
+                        var produto = ((List<Produto>)ViewBag.Produtos)
+                            .FirstOrDefault(p => p.Id == item.IdProduto);
+                        <tr>
+                            <td>@(produto?.Nome ?? "Produto desconhecido")</td>
+                            <td>@item.Tamanho</td>
+                            <td>@item.Quantidade</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    }
+}
+
+<a href="/produto/relatorios" class="btn btn-secondary mt-2">Voltar</a>
