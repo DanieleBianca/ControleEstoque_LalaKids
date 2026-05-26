@@ -299,4 +299,15 @@ db.Movimentacao.Add(movimentacao);
 
         return View(movimentacoes);
     }
+
+    public ActionResult DeletarTamanho(string id)
+    {
+        if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        var pt = db.ProdutoTamanho.Single(x => x.Id == id);
+        var idProduto = pt.IdProduto;
+        db.ProdutoTamanho.Remove(pt);
+        db.SaveChanges();
+        return RedirectToAction("Update", new { id = idProduto });
+    }
+
 }
