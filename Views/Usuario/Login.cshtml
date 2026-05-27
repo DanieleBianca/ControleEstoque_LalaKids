@@ -1,20 +1,138 @@
-<h2 class="mb-3">Login</h2>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-@if (ViewBag.Erro != null)
-{
-    <div class="alert alert-danger">@ViewBag.Erro</div>
-}
+<style>
+    * { font-family: 'Poppins', sans-serif; }
+    body { background-color: #f8f8f6; margin: 0; padding: 0; }
+    .header-azul {
+        background-color: #BDD7E7;
+        width: 100%;
+        padding: 32px 0;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .titulo-login {
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #1a1a1a;
+        margin: 40px 0 20px 0;
+    }
+    .card-login {
+        max-width: 500px;
+        margin: 0 auto 50px auto;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .form-control {
+        background-color: #f0f2f5;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 12px;
+        color: #1a1a1a;
+    }
+    .btn-entrar {
+        background-color: #2E6A8E;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 50px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        display: block;
+        margin: 0 auto;
+        /* animação suave no hover */
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    /* hover: escurece e sobe levemente */
+    .btn-entrar:hover {
+        background-color: #245a7a;
+        color: white;
+        transform: translateY(-1px);
+    }
+    .alerta-erro {
+        color: #F24822;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+    .btn-olho {
+        background: #f0f2f5;
+        border: 1px solid #e0e0e0;
+        border-left: none;
+        border-radius: 0 8px 8px 0;
+        color: #555;
+        padding: 0 12px;
+        transition: background-color 0.2s ease;
+    }
+    .btn-olho:hover { background-color: #e0e0e0; }
+    /* link cadastrar novo usuário com sublinhado no hover */
+    .link-cadastro {
+        color: #2E6A8E;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: text-decoration 0.1s ease;
+    }
+    .link-cadastro:hover {
+        text-decoration: underline;
+        color: #2E6A8E;
+    }
+</style>
 
-<form method="post">
-    <div class="mb-2">
-        <label>Login</label>
-        <input class="form-control" type="text" name="login" required />
-    </div>
-    <div class="mb-2">
-        <label>Senha</label>
-        <input class="form-control" type="password" name="senha" required />
-    </div>
-    <button class="btn btn-primary mt-2">Entrar</button>
-</form>
+<div class="header-azul">
+    <img src="/images/logo.jpg" alt="Logo LalaKids" height="100" onerror="this.style.display='none'" />
+</div>
 
-<a href="/Usuario/Cadastro" class="btn btn-link mt-2">Não tem conta? Cadastre-se</a>
+<h2 class="titulo-login">Acesse o sistema</h2>
+
+<div class="card-login">
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div id="alertaSucesso" class="alert"
+             style="background-color: #4CAF50; color: white; border-radius: 8px; text-align: center; font-weight: 600; padding: 16px; margin-bottom: 16px;">
+            ✅ @TempData["Sucesso"]
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById('alertaSucesso').style.display = 'none';
+            }, 3000);
+        </script>
+    }
+
+    @if (ViewBag.Erro != null)
+    {
+        <p class="alerta-erro">@ViewBag.Erro</p>
+    }
+
+    <form method="post">
+        <div class="mb-3">
+            <label>Login</label>
+            <input class="form-control" type="text" name="login" required />
+        </div>
+        <div class="mb-3">
+            <label>Senha</label>
+            <div class="input-group">
+                <input class="form-control" type="password" name="senha" id="campoSenha"
+                       required style="border-radius: 8px 0 0 8px;" />
+                <button class="btn-olho" type="button" onclick="alternarSenha()">👁</button>
+            </div>
+        </div>
+        <div class="text-end mb-4">
+            <a href="/Usuario/Cadastro" class="link-cadastro">
+                Cadastrar novo usuário
+            </a>
+        </div>
+        <button class="btn-entrar">ENTRAR</button>
+    </form>
+</div>
+
+<script>
+    function alternarSenha() {
+        var campo = document.getElementById('campoSenha');
+        campo.type = campo.type === 'password' ? 'text' : 'password';
+    }
+</script>

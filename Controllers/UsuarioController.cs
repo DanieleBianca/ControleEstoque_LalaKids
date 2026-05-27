@@ -11,34 +11,31 @@ public class UsuarioController : Controller
 
     public ActionResult Index()
     {
-    return View(db.Usuario.ToList());
+        return View("Gerenciar", db.Usuario.ToList());
     }
 
-    // GET - abre formulário de cadastro
     [HttpGet]
     public ActionResult Cadastro()
     {
         return View();
     }
 
-    // POST - salva o usuário
     [HttpPost]
     public ActionResult Cadastro(Usuario u)
     {
         u.Id = Guid.NewGuid().ToString();
         db.Usuario.Add(u);
         db.SaveChanges();
+        TempData["Sucesso"] = $"Usuário {u.Nome} cadastrado com sucesso!";
         return RedirectToAction("Login");
     }
 
-    // GET - abre tela de login
     [HttpGet]
     public ActionResult Login()
     {
         return View();
     }
 
-    // POST - verifica login e senha
     [HttpPost]
     public ActionResult Login(string login, string senha)
     {
@@ -51,24 +48,46 @@ public class UsuarioController : Controller
             return View();
         }
 
-        HttpContext.Session.SetString("UsuarioNome", usuario.Nome); //salva o nome do usuário na sessão para usar nas telas
-        HttpContext.Session.SetString("UsuarioId", usuario.Id); // salva o id na sessão
+        HttpContext.Session.SetString("UsuarioNome", usuario.Nome);
+        HttpContext.Session.SetString("UsuarioId", usuario.Id);
         return RedirectToAction("Index", "Produto");
     }
 
-    // Logout - limpa a sessão
     public ActionResult Logout()
     {
         HttpContext.Session.Clear();
         return RedirectToAction("Login");
     }
 
-    //Deleta usuario
     public ActionResult Delete(string id)
     {
-    var usuario = db.Usuario.Single(u => u.Id == id);
-    db.Usuario.Remove(usuario);
-    db.SaveChanges();
-    return RedirectToAction("Login");
+        var idLogado = HttpContext.Session.GetString("UsuarioId");
+        if (id == idLogado)
+        {
+            TempData["Erro"] = "Você não pode excluir o usuário logado!";
+            return RedirectToAction("Index");
+        }
+
+        var usuario = db.Usuario.Single(u => u.Id == id);
+        db.Usuario.Remove(usuario);
+        db.SaveChanges();
+        TempData["Sucesso"] = $"Usuário {usuario.Nome} excluído com sucesso!";
+        return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public ActionResult Editar(string id)
+    {
+        var usuario = db.Usuario.Single(u => u.Id == id);
+        return View(usuario);
+    }
+
+    [HttpPost]
+    public ActionResult Editar(Usuario u)
+    {
+        db.Usuario.Update(u);
+        db.SaveChanges();
+        TempData["Sucesso"] = $"Usuário {u.Nome} atualizado com sucesso!";
+        return RedirectToAction("Index");
     }
 }

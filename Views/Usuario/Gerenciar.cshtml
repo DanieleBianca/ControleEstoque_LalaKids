@@ -1,0 +1,137 @@
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+    * { font-family: 'Poppins', sans-serif; }
+    body { background-color: #f8f8f6; margin: 0; padding: 0; }
+    .header-azul {
+        background-color: #BDD7E7;
+        width: 100%;
+        padding: 32px 0;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .titulo-pagina {
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #1a1a1a;
+        margin: 40px 0 20px 0;
+    }
+    .conteudo {
+        max-width: 700px;
+        margin: 0 auto 50px auto;
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .table th { font-weight: 600; color: #1a1a1a; }
+    .btn-voltar {
+        display: block;
+        text-align: center;
+        margin-top: 24px;
+        color: #2E6A8E;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+    .btn-voltar:hover { text-decoration: underline; color: #2E6A8E; }
+    .btn-editar {
+        background-color: #14ae5c;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-size: 0.875rem;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    /* hover: escurece levemente e sobe um pouco — feedback visual claro */
+    .btn-editar:hover {
+        background-color: #0e8a48;
+        color: white;
+        transform: translateY(-1px);
+    }
+    .btn-excluir {
+        background-color: #F24822;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-size: 0.875rem;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    /* hover: escurece e sobe — padrão de botão destrutivo */
+    .btn-excluir:hover {
+        background-color: #c03518;
+        color: white;
+        transform: translateY(-1px);
+    }
+</style>
+
+<div class="header-azul">
+    <img src="/images/logo.jpg" alt="Logo LalaKids" height="100" onerror="this.style.display='none'" />
+</div>
+
+<h2 class="titulo-pagina">Gerenciar Usuários</h2>
+
+<div class="conteudo">
+
+    @if (TempData["Sucesso"] != null)
+    {
+        <div id="alertaSucesso" class="alert"
+             style="background-color: #4CAF50; color: white; border-radius: 8px; text-align: center; font-weight: 600; padding: 16px; margin-bottom: 16px;">
+            ✅ @TempData["Sucesso"]
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById('alertaSucesso').style.display = 'none';
+            }, 3000);
+        </script>
+    }
+
+    @if (TempData["Erro"] != null)
+    {
+        <div id="alertaErro" class="alert"
+             style="background-color: #F24822; color: white; border-radius: 8px; text-align: center; font-weight: 600; padding: 16px; margin-bottom: 16px;">
+            ⚠️ @TempData["Erro"]
+        </div>
+        <script>
+            setTimeout(function() {
+                document.getElementById('alertaErro').style.display = 'none';
+            }, 3000);
+        </script>
+    }
+
+    <table class="table table-bordered">
+        <tr>
+            <th>Nome</th>
+            <th>Login</th>
+            <th>Ações</th>
+        </tr>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Nome</td>
+                <td>@u.Login</td>
+                <td>
+                    <a href="/Usuario/Editar/@u.Id" class="btn-editar">Editar</a>
+
+                    @if (u.Id != Context.Session.GetString("UsuarioId"))
+                    {
+                        <a href="/Usuario/Delete/@u.Id" class="btn-excluir"
+                           onclick="return confirm('Tem certeza que deseja excluir o usuário @u.Nome?')">
+                            Excluir
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+    <a href="/Produto/Index" class="btn-voltar">Voltar para o estoque</a>
+</div>
