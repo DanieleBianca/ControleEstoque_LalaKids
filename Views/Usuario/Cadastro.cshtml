@@ -1,5 +1,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">⚠️ @TempData["Erro"]</div>
+}
+
 <style>
     * { font-family: 'Poppins', sans-serif; }
     body { background-color: #f8f8f6; margin: 0; padding: 0; }

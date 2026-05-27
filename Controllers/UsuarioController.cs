@@ -23,6 +23,12 @@ public class UsuarioController : Controller
     [HttpPost]
     public ActionResult Cadastro(Usuario u)
     {
+        var existe = db.Usuario.Any(x => x.Login == u.Login);
+        if (existe)
+        {
+            TempData["Erro"] = "Este login já está em uso. Escolha outro.";
+            return RedirectToAction("Cadastro");
+        }
         u.Id = Guid.NewGuid().ToString();
         db.Usuario.Add(u);
         db.SaveChanges();
