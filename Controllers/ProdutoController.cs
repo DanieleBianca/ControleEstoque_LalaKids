@@ -52,6 +52,18 @@ public class ProdutoController : Controller //herança do controller; produto é
             return RedirectToAction("Create");
         }
 
+        if (p.ValorCompra < 0 || p.ValorRevenda < 0)
+        {
+            TempData["Erro"] = "Valores de compra e revenda não podem ser negativos.";
+            return RedirectToAction("Create");
+        }
+
+        if (Quantidades.Any(q => q < 0))
+        {
+            TempData["Erro"] = "Quantidade não pode ser negativa.";
+            return RedirectToAction("Create");
+        }
+
         p.Id = Guid.NewGuid().ToString(); // gera id único pro produto
         db.Produto.Add(p); // salva o produto
 
@@ -115,7 +127,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         TempData["Erro"] = "Quantidade não pode ser negativa.";
         return RedirectToAction("Update", new { id = p.Id });
     }
-    
+
     db.Produto.Update(p);
 
     for (int i = 0; i < TamanhoIds.Length; i++)
