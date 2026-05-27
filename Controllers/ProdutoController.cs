@@ -102,6 +102,19 @@ public class ProdutoController : Controller //herança do controller; produto é
     public ActionResult Update(Produto p, string[] Tamanhos, int[] Quantidades, string[] TamanhoIds)
     {
     if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+
+    //impede editar valores para negativo
+    if (p.ValorCompra < 0 || p.ValorRevenda < 0)
+    {
+        TempData["Erro"] = "Valores de compra e revenda não podem ser negativos.";
+        return RedirectToAction("Update", new { id = p.Id });
+    }
+
+    if (Quantidades.Any(q => q < 0))
+    {
+        TempData["Erro"] = "Quantidade não pode ser negativa.";
+        return RedirectToAction("Update", new { id = p.Id });
+    }
     
     db.Produto.Update(p);
 

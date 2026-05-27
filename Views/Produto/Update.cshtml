@@ -1,5 +1,10 @@
 <h1 class="mb-3">Editar Produto</h1>
 
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">⚠️ @TempData["Erro"]</div>
+}
+
 <form action="/produto/update" method="POST">
     <input type="hidden" name="Id" value="@Model.Id" />
 
@@ -30,7 +35,6 @@
         @foreach (var pt in (List<ProdutoTamanho>)ViewBag.Tamanhos)
         {
             <div class="d-flex gap-2 mb-2">
-                <!-- id oculto do produtoTamanho para atualizar o correto -->
                 <input type="hidden" name="TamanhoIds[]" value="@pt.Id" />
                 <input class="form-control" name="Tamanhos[]" value="@pt.Tamanho" placeholder="Tamanho" />
                 <input class="form-control" name="Quantidades[]" value="@pt.Quantidade" type="number" placeholder="Quantidade" />
@@ -40,7 +44,6 @@
     </div>
 
     <button type="button" class="btn btn-secondary mb-3" onclick="adicionarTamanho()">+ Adicionar tamanho</button>
-
     <br/>
     <button class="btn btn-primary mt-2">Salvar</button>
     <a href="/produto/index" class="btn btn-secondary mt-2">Cancelar</a>
