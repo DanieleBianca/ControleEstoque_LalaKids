@@ -15,20 +15,9 @@
         top: 0; left: 0;
         box-shadow: 2px 0 8px rgba(0,0,0,0.08);
     }
-    .sidebar-logo {
-        text-align: center;
-        margin-bottom: 32px;
-    }
-    .sidebar-logo img {
-        height: 80px;
-        object-fit: contain;
-    }
-    .sidebar-nav {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        flex: 1;
-    }
+    .sidebar-logo { text-align: center; margin-bottom: 32px; }
+    .sidebar-logo img { height: 80px; object-fit: contain; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
     .btn-sidebar {
         background-color: white;
         color: #1a1a1a;
@@ -41,37 +30,16 @@
         display: block;
         transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    .btn-sidebar:hover {
-        background-color: #e8f0f5;
-        transform: translateX(3px);
-        color: #1a1a1a;
-    }
-    .btn-sidebar.ativo {
-        background-color: #2E6A8E;
-        color: white;
-    }
+    .btn-sidebar:hover { background-color: #e8f0f5; transform: translateX(3px); color: #1a1a1a; }
+    .btn-sidebar.ativo { background-color: #2E6A8E; color: white; }
     .btn-sidebar.ativo:hover { color: white; }
-    .sidebar-divider {
-        border: none;
-        border-top: 1px solid rgba(0,0,0,0.15);
-        margin: 16px 0;
-    }
-    .sidebar-footer {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
+    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 16px 0; }
+    .sidebar-footer { display: flex; flex-direction: column; gap: 10px; }
     .btn-sidebar-link {
-        background: none;
-        border: none;
-        padding: 8px 4px;
-        text-align: left;
-        color: #1a1a1a;
-        font-size: 0.95rem;
-        text-decoration: none;
-        display: block;
-        transition: color 0.2s ease;
-        font-weight: 500;
+        background: none; border: none; padding: 8px 4px;
+        text-align: left; color: #1a1a1a; font-size: 0.95rem;
+        text-decoration: none; display: block;
+        transition: color 0.2s ease; font-weight: 500;
     }
     .btn-sidebar-link:hover { color: #2E6A8E; }
     .btn-sair { color: #F24822; }
@@ -79,57 +47,68 @@
 
     .main-content {
         margin-left: 260px;
-        padding: 32px;
+        padding: 48px;
         flex: 1;
         width: calc(100% - 260px);
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-    .main-titulo {
-        font-size: 1.8rem;
-        font-weight: 700;
-        margin-bottom: 32px;
-        text-align: center;
-        width: 100%;
-    }
+    .main-titulo { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; text-align: center; width: 100%; }
+    .main-subtitulo { color: #888; font-size: 0.9rem; font-weight: 400; text-align: center; margin-bottom: 32px; width: 100%; }
+
     .card-form {
         background: white;
         border-radius: 16px;
         padding: 40px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         width: 100%;
         max-width: 650px;
     }
     .form-control {
-        background-color: #f0f2f5;
-        border: 1px solid #e0e0e0;
+        background-color: #f8f8f6;
+        border: 1px solid #ebebeb;
         border-radius: 8px;
         padding: 10px 14px;
         color: #1a1a1a;
         width: 100%;
+        transition: border-color 0.2s ease;
     }
-    .form-label { font-weight: 600; margin-bottom: 8px; display: block; color: #1a1a1a; }
+    .form-control:focus { outline: none; border-color: #2E6A8E; background-color: white; }
+    .form-label { font-weight: 600; font-size: 0.85rem; color: #666; margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.04em; }
     .secao-titulo {
         font-weight: 700;
-        font-size: 1rem;
-        margin: 24px 0 12px 0;
-        color: #1a1a1a;
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin: 28px 0 12px 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #f0f0f0;
     }
-    /* radio buttons customizados */
-    .radio-group {
-        display: flex;
-        gap: 16px;
-        margin-top: 8px;
-    }
+
+    /* radio tipo movimentação */
+    .radio-group { display: flex; gap: 12px; margin-top: 8px; }
     .radio-option {
         display: flex;
         align-items: center;
         gap: 8px;
         cursor: pointer;
         font-weight: 500;
+        font-size: 0.9rem;
+        background-color: #f8f8f6;
+        border: 1px solid #ebebeb;
+        border-radius: 8px;
+        padding: 10px 20px;
+        transition: all 0.2s ease;
+    }
+    .radio-option:has(input:checked) {
+        background-color: #e8f0f5;
+        border-color: #2E6A8E;
+        color: #2E6A8E;
     }
     .radio-option input { cursor: pointer; accent-color: #2E6A8E; }
+
     .alerta-erro {
         background-color: #fdecea;
         color: #F24822;
@@ -153,62 +132,53 @@
         max-width: 650px;
     }
     .btn-adicionar {
-        background-color: #f0f2f5;
+        background-color: transparent;
         color: #2E6A8E;
-        border: 1px solid #e0e0e0;
+        border: 1px dashed #2E6A8E;
         border-radius: 8px;
         padding: 8px 16px;
         font-weight: 600;
+        font-size: 0.85rem;
         cursor: pointer;
-        transition: background-color 0.2s ease, transform 0.1s ease;
-        margin-bottom: 24px;
+        transition: background-color 0.2s ease;
+        margin-bottom: 28px;
+        width: 100%;
     }
-    .btn-adicionar:hover {
-        background-color: #e0e8f0;
-        transform: translateY(-1px);
-    }
+    .btn-adicionar:hover { background-color: #f0f6fa; }
+    .acoes { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
     .btn-confirmar {
         background-color: #2E6A8E;
         color: white;
         border: none;
         border-radius: 8px;
-        padding: 10px 32px;
-        font-weight: bold;
+        padding: 12px 36px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.04em;
         transition: background-color 0.2s ease, transform 0.1s ease;
         cursor: pointer;
     }
-    .btn-confirmar:hover {
-        background-color: #245a7a;
-        transform: translateY(-1px);
-        color: white;
-    }
+    .btn-confirmar:hover { background-color: #245a7a; transform: translateY(-1px); color: white; }
     .link-cancelar {
-        color: #555;
+        color: #aaa;
         text-decoration: none;
-        font-size: 0.9rem;
-        margin-left: 16px;
+        font-size: 0.88rem;
         transition: color 0.2s ease;
     }
-    .link-cancelar:hover {
-        color: #1a1a1a;
-        text-decoration: underline;
-    }
+    .link-cancelar:hover { color: #555; text-decoration: underline; }
 </style>
 
 <div class="sidebar">
     <div class="sidebar-logo">
         <img src="/images/logo.jpg" alt="Logo" onerror="this.style.display='none'" />
     </div>
-
     <nav class="sidebar-nav">
         <a href="/produto/index" class="btn-sidebar">Estoque</a>
         <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
         <a href="/produto/movimentar" class="btn-sidebar ativo">Movimentar Estoque</a>
         <a href="/produto/relatorios" class="btn-sidebar">Relatórios</a>
     </nav>
-
     <hr class="sidebar-divider" />
-
     <div class="sidebar-footer">
         <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
         <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
@@ -217,6 +187,7 @@
 
 <div class="main-content">
     <div class="main-titulo">Movimentar Estoque</div>
+    <div class="main-subtitulo">Registre entradas e saídas de produtos</div>
 
     @if (TempData["Erro"] != null)
     {
@@ -231,7 +202,7 @@
     <div class="card-form">
         <form action="/produto/movimentar" method="POST">
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label class="form-label">Tipo de Movimentação</label>
                 <div class="radio-group">
                     <label class="radio-option">
@@ -250,13 +221,13 @@
                 <div class="d-flex gap-2 mb-2">
                     <input class="form-control" name="CodigosBarras[0]" placeholder="Código de Barras" />
                     <input class="form-control" name="Tamanhos[0]" placeholder="Tamanho (ex: 10, 12...)" />
-                    <input class="form-control" name="Quantidades[0]" type="number" min="1" placeholder="Quantidade" />
+                    <input class="form-control" name="Quantidades[0]" type="number" min="1" placeholder="Qtd" />
                 </div>
             </div>
 
             <button type="button" class="btn-adicionar" onclick="adicionarItem()">+ Adicionar produto</button>
 
-            <div>
+            <div class="acoes">
                 <button type="submit" class="btn-confirmar">Confirmar</button>
                 <a href="/produto/index" class="link-cancelar">Cancelar</a>
             </div>
@@ -272,8 +243,8 @@
         div.className = 'd-flex gap-2 mb-2';
         div.innerHTML = `
             <input class="form-control" name="CodigosBarras[${contador}]" placeholder="Código de Barras" />
-            <input class="form-control" name="Tamanhos[${contador}]" placeholder="Tamanho" />
-            <input class="form-control" name="Quantidades[${contador}]" type="number" min="1" placeholder="Quantidade" />
+            <input class="form-control" name="Tamanhos[${contador}]" placeholder="Tamanho (ex: 10, 12...)" />
+            <input class="form-control" name="Quantidades[${contador}]" type="number" min="1" placeholder="Qtd" />
         `;
         document.getElementById('itens').appendChild(div);
         contador++;
