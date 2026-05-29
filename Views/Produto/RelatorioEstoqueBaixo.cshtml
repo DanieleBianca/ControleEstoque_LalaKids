@@ -1,37 +1,186 @@
 @model List<ProdutoTamanho>
 
-<h1 class="mb-3">Estoque Baixo</h1>
-<a href="/produto/relatorios" class="btn btn-secondary mb-3">Voltar</a>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
-<p class="text-muted">Tamanhos com 2 unidades ou menos.</p>
+<style>
+    * { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
+    body { background-color: #f8f8f6; margin: 0; padding: 0; display: flex; min-height: 100vh; }
 
-<table class="table table-bordered">
-    <tr>
-        <th>Produto</th>
-        <th>Tamanhos críticos</th>
-    </tr>
-    @foreach (var produto in (List<Produto>)ViewBag.Produtos)
-    {
-        <!-- busca os tamanhos baixos desse produto específico -->
-        var tamanhosDoProduto = Model
-            .Where(pt => pt.IdProduto == produto.Id)
-            .ToList();
+    .sidebar {
+        width: 260px;
+        min-height: 100vh;
+        background-color: #BDD7E7;
+        display: flex;
+        flex-direction: column;
+        padding: 24px 16px;
+        position: fixed;
+        top: 0; left: 0;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+    }
+    .sidebar-logo { text-align: center; margin-bottom: 32px; }
+    .sidebar-logo img { height: 80px; object-fit: contain; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .btn-sidebar {
+        background-color: white;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-weight: 600;
+        text-align: left;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+    .btn-sidebar:hover { background-color: #e8f0f5; transform: translateX(3px); color: #1a1a1a; }
+    .btn-sidebar.ativo { background-color: #2E6A8E; color: white; }
+    .btn-sidebar.ativo:hover { color: white; }
+    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 16px 0; }
+    .sidebar-footer { display: flex; flex-direction: column; gap: 10px; }
+    .btn-sidebar-link {
+        background: none; border: none; padding: 8px 4px;
+        text-align: left; color: #1a1a1a; font-size: 0.95rem;
+        text-decoration: none; display: block;
+        transition: color 0.2s ease; font-weight: 500;
+    }
+    .btn-sidebar-link:hover { color: #2E6A8E; }
+    .btn-sair { color: #F24822; }
+    .btn-sair:hover { color: #c03518; }
 
-        <!-- só exibe o produto se tiver algum tamanho com estoque baixo -->
-        if (tamanhosDoProduto.Any())
+    .main-content {
+        margin-left: 260px;
+        padding: 48px;
+        flex: 1;
+        width: calc(100% - 260px);
+    }
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+    .main-titulo { font-size: 1.8rem; font-weight: 700; }
+    .main-subtitulo { color: #888; font-size: 0.9rem; margin-bottom: 32px; }
+    .btn-voltar {
+        background-color: white;
+        color: #1a1a1a;
+        border: 1px solid #ebebeb;
+        border-radius: 8px;
+        padding: 9px 20px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .btn-voltar:hover { background-color: #f0f0ee; border-color: #ccc; color: #1a1a1a; }
+
+    .produto-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        margin-bottom: 16px;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease;
+    }
+    .produto-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .card-topo {
+        padding: 16px 24px;
+        border-bottom: 1px solid #f5f5f5;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+    .card-corpo {
+        padding: 14px 24px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .badge-tamanho {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+    }
+    .badge-zero { background-color: #fdecea; color: #F24822; }
+    .badge-baixo { background-color: #fff8e1; color: #b8860b; }
+
+    .alerta-info {
+        background-color: #f0f6fa;
+        color: #2E6A8E;
+        border: 1px solid #bdd7e7;
+        border-radius: 8px;
+        padding: 16px 20px;
+        font-size: 0.9rem;
+    }
+</style>
+
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <img src="/images/logo.jpg" alt="Logo" onerror="this.style.display='none'" />
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/produto/index" class="btn-sidebar">Estoque</a>
+        <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
+        <a href="/produto/movimentar" class="btn-sidebar">Movimentar Estoque</a>
+        <a href="/produto/relatorios" class="btn-sidebar ativo">Relatórios</a>
+    </nav>
+    <hr class="sidebar-divider" />
+    <div class="sidebar-footer">
+        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
+        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="page-header">
+        <div>
+            <div class="main-titulo">Estoque Baixo</div>
+            <div class="main-subtitulo">Tamanhos com 2 unidades ou menos</div>
+        </div>
+        <a href="/produto/relatorios" class="btn-voltar">Voltar</a>
+    </div>
+
+    @{
+        var temItens = false;
+        foreach (var produto in (List<Produto>)ViewBag.Produtos)
         {
-            <tr>
-                <td>@produto.Nome</td>
-                <td>
-                    <!-- lista todos os tamanhos críticos em uma célula só -->
-                    @foreach (var pt in tamanhosDoProduto)
-                    {
-                        <span class="badge @(pt.Quantidade == 0 ? "bg-danger" : "bg-warning text-dark") me-1">
-                            @pt.Tamanho: @pt.Quantidade @(pt.Quantidade <= 1 ? "unidade" : "unidades")
-                        </span>
-                    }
-                </td>
-            </tr>
+            var tamanhosDoProduto = Model.Where(pt => pt.IdProduto == produto.Id).ToList();
+            if (tamanhosDoProduto.Any()) { temItens = true; break; }
         }
     }
-</table>
+
+    @if (!temItens)
+    {
+        <div class="alerta-info">Nenhum produto com estoque baixo no momento.</div>
+    }
+    else
+    {
+        @foreach (var produto in (List<Produto>)ViewBag.Produtos)
+        {
+            var tamanhosDoProduto = Model
+                .Where(pt => pt.IdProduto == produto.Id)
+                .ToList();
+
+            if (tamanhosDoProduto.Any())
+            {
+                <div class="produto-card">
+                    <div class="card-topo">@produto.Nome</div>
+                    <div class="card-corpo">
+                        @foreach (var pt in tamanhosDoProduto)
+                        {
+                            <span class="badge-tamanho @(pt.Quantidade == 0 ? "badge-zero" : "badge-baixo")">
+                                @pt.Tamanho: @pt.Quantidade @(pt.Quantidade <= 1 ? "unidade" : "unidades")
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

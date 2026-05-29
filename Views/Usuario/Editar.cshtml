@@ -1,10 +1,17 @@
-@model IEnumerable<Usuario>
+@model Usuario
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
     * { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
-    body { background-color: #f8f8f6; margin: 0; padding: 0; display: flex; min-height: 100vh; }
+
+    body {
+        background-color: #f8f8f6;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        min-height: 100vh;
+    }
 
     .sidebar {
         width: 260px;
@@ -14,12 +21,28 @@
         flex-direction: column;
         padding: 24px 16px;
         position: fixed;
-        top: 0; left: 0;
+        top: 0;
+        left: 0;
         box-shadow: 2px 0 8px rgba(0,0,0,0.08);
     }
-    .sidebar-logo { text-align: center; margin-bottom: 32px; }
-    .sidebar-logo img { height: 80px; object-fit: contain; }
-    .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+
+    .sidebar-logo {
+        text-align: center;
+        margin-bottom: 32px;
+    }
+
+    .sidebar-logo img {
+        height: 80px;
+        object-fit: contain;
+    }
+
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        flex: 1;
+    }
+
     .btn-sidebar {
         background-color: white;
         color: #1a1a1a;
@@ -30,34 +53,55 @@
         text-align: left;
         text-decoration: none;
         display: block;
-        transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    .btn-sidebar:hover { background-color: #e8f0f5; transform: translateX(3px); color: #1a1a1a; }
-    .btn-sidebar.ativo { background-color: #2E6A8E; color: white; }
-    .btn-sidebar.ativo:hover { color: white; }
-    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 16px 0; }
-    .sidebar-footer { display: flex; flex-direction: column; gap: 10px; }
+
+    .sidebar-divider {
+        border: none;
+        border-top: 1px solid rgba(0,0,0,0.15);
+        margin: 16px 0;
+    }
+
+    .sidebar-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
     .btn-sidebar-link {
-        background: none; border: none; padding: 8px 4px;
-        text-align: left; color: #1a1a1a; font-size: 0.95rem;
-        text-decoration: none; display: block;
-        transition: color 0.2s ease; font-weight: 500;
+        background: none;
+        border: none;
+        padding: 8px 4px;
+        text-align: left;
+        color: #1a1a1a;
+        font-size: 0.95rem;
+        text-decoration: none;
+        font-weight: 500;
     }
-    .btn-sidebar-link:hover { color: #2E6A8E; }
-    .btn-sair { color: #F24822; }
-    .btn-sair:hover { color: #c03518; }
+
+    .btn-sair {
+        color: #F24822;
+    }
 
     .main-content {
         margin-left: 260px;
         padding: 48px;
         flex: 1;
-        width: calc(100% - 260px);
         display: flex;
         flex-direction: column;
         align-items: center;
     }
-    .main-titulo { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; text-align: center; width: 100%; }
-    .main-subtitulo { color: #888; font-size: 0.9rem; font-weight: 400; text-align: center; margin-bottom: 32px; width: 100%; }
+
+    .main-titulo {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+
+    .main-subtitulo {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 32px;
+    }
 
     .card-form {
         background: white;
@@ -68,79 +112,31 @@
         max-width: 700px;
     }
 
-    .alerta-erro {
-        background-color: #fdecea;
-        color: #F24822;
-        border: 1px solid #F24822;
+    .campo {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .campo label {
+        margin-bottom: 8px;
+        font-weight: 600;
+    }
+
+    .campo input {
+        padding: 12px;
+        border: 1px solid #ddd;
         border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 16px;
-        font-weight: 600;
-        width: 100%;
-        max-width: 700px;
-    }
-    .alerta-sucesso {
-        background-color: #e8f5e9;
-        color: #14ae5c;
-        border: 1px solid #14ae5c;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 16px;
-        font-weight: 600;
-        width: 100%;
-        max-width: 700px;
+        font-size: 0.95rem;
     }
 
-    .table { width: 100%; border-collapse: collapse; }
-    .table th {
-        font-weight: 600;
-        font-size: 0.85rem;
-        color: #666;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        padding: 10px 14px;
-        border-bottom: 1px solid #f0f0f0;
-        text-align: left;
+    .acoes {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 24px;
     }
-    .table td {
-        padding: 12px 14px;
-        border-bottom: 1px solid #f0f0f0;
-        font-size: 0.9rem;
-        vertical-align: middle;
-    }
-    .table tr:last-child td { border-bottom: none; }
-    .table tr:hover td { background-color: #f8f8f6; }
 
-    .btn-editar {
-        background-color: #14ae5c;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 5px 14px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        transition: background-color 0.2s ease, transform 0.1s ease;
-    }
-    .btn-editar:hover { background-color: #0e8a48; color: white; transform: translateY(-1px); }
-
-    .btn-excluir {
-        background-color: transparent;
-        color: #F24822;
-        border: 1px solid #F24822;
-        border-radius: 6px;
-        padding: 5px 14px;
-        font-size: 0.82rem;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
-        margin-left: 6px;
-    }
-    .btn-excluir:hover { background-color: #F24822; color: white; transform: translateY(-1px); }
-
-    .acoes { display: flex; align-items: center; gap: 16px; margin-top: 24px; }
     .btn-confirmar {
         background-color: #2E6A8E;
         color: white;
@@ -148,101 +144,72 @@
         border-radius: 8px;
         padding: 12px 36px;
         font-weight: 700;
-        font-size: 0.9rem;
-        letter-spacing: 0.04em;
-        transition: background-color 0.2s ease, transform 0.1s ease;
         cursor: pointer;
-        text-decoration: none;
-        display: inline-block;
     }
-    .btn-confirmar:hover { background-color: #245a7a; transform: translateY(-1px); color: white; }
+
     .link-cancelar {
-        color: #aaa;
+        color: #888;
         text-decoration: none;
-        font-size: 0.88rem;
-        transition: color 0.2s ease;
     }
-    .link-cancelar:hover { color: #555; text-decoration: underline; }
 </style>
 
 <div class="sidebar">
     <div class="sidebar-logo">
-        <img src="/images/logo.jpg" alt="Logo" onerror="this.style.display='none'" />
+        <img src="/images/logo.jpg" alt="Logo" />
     </div>
+
     <nav class="sidebar-nav">
         <a href="/produto/index" class="btn-sidebar">Estoque</a>
         <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
         <a href="/produto/movimentar" class="btn-sidebar">Movimentar Estoque</a>
         <a href="/produto/relatorios" class="btn-sidebar">Relatórios</a>
     </nav>
+
     <hr class="sidebar-divider" />
+
     <div class="sidebar-footer">
-        <a href="/Usuario/Index" class="btn-sidebar-link" style="color: #2E6A8E; font-weight: 600;">Gerenciar Usuários</a>
+        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
         <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
     </div>
 </div>
 
 <div class="main-content">
-    <div class="main-titulo">Gerenciar Usuários</div>
-    <div class="main-subtitulo">Edite ou remova os usuários do sistema</div>
 
-    @if (TempData["Sucesso"] != null)
-    {
-        <div id="alertaSucesso" class="alerta-sucesso">
-            @TempData["Sucesso"]
-        </div>
-        <script>
-            setTimeout(function() {
-                document.getElementById('alertaSucesso').style.display = 'none';
-            }, 3000);
-        </script>
-    }
-
-    @if (TempData["Erro"] != null)
-    {
-        <div id="alertaErro" class="alerta-erro">
-            @TempData["Erro"]
-        </div>
-        <script>
-            setTimeout(function() {
-                document.getElementById('alertaErro').style.display = 'none';
-            }, 3000);
-        </script>
-    }
+    <div class="main-titulo">Editar Usuário</div>
+    <div class="main-subtitulo">Atualize as informações do usuário</div>
 
     <div class="card-form">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Login</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var u in Model)
-                {
-                    <tr>
-                        <td>@u.Nome</td>
-                        <td>@u.Login</td>
-                        <td>
-                            <a href="/Usuario/Editar/@u.Id" class="btn-editar">Editar</a>
-                            @if (u.Id != Context.Session.GetString("UsuarioId"))
-                            {
-                                <a href="/Usuario/Delete/@u.Id" class="btn-excluir"
-                                   onclick="return confirm('Tem certeza que deseja excluir o usuário @u.Nome?')">
-                                    Excluir
-                                </a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
 
-        <div class="acoes">
-            <a href="/Usuario/Cadastro" class="btn-confirmar">Novo Usuário</a>
-            <a href="/Produto/Index" class="link-cancelar">Voltar para o estoque</a>
-        </div>
+        <form method="post" action="/Usuario/Editar">
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="campo">
+                <label>Nome</label>
+                <input asp-for="Nome" />
+            </div>
+
+            <div class="campo">
+                <label>Login</label>
+                <input asp-for="Login" />
+            </div>
+
+            <div class="campo">
+                <label>Senha</label>
+                <input asp-for="Senha" />
+            </div>
+
+            <div class="acoes">
+                <button type="submit" class="btn-confirmar">
+                    Salvar Alterações
+                </button>
+
+                <a href="/Usuario/Index" class="link-cancelar">
+                    Cancelar
+                </a>
+            </div>
+
+        </form>
+
     </div>
 </div>
