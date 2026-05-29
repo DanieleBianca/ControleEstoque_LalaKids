@@ -1,91 +1,169 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-    * { font-family: 'Poppins', sans-serif; }
-    body { background-color: #f8f8f6; margin: 0; padding: 0; }
-    .header-azul {
+    * { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
+    body { background-color: #f8f8f6; margin: 0; padding: 0; display: flex; min-height: 100vh; }
+
+    .sidebar {
+        width: 260px;
+        min-height: 100vh;
         background-color: #BDD7E7;
-        width: 100%;
-        padding: 32px 0;
-        text-align: center;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-direction: column;
+        padding: 24px 16px;
+        position: fixed;
+        top: 0; left: 0;
+        box-shadow: 2px 0 8px rgba(0,0,0,0.08);
     }
-    .titulo-pagina {
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.8rem;
+    .sidebar-logo { text-align: center; margin-bottom: 32px; }
+    .sidebar-logo img { height: 80px; object-fit: contain; }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .btn-sidebar {
+        background-color: white;
         color: #1a1a1a;
-        margin: 40px 0 20px 0;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-weight: 600;
+        text-align: left;
+        text-decoration: none;
+        display: block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    .conteudo {
-        max-width: 700px;
-        margin: 0 auto 50px auto;
+    .btn-sidebar:hover { background-color: #e8f0f5; transform: translateX(3px); color: #1a1a1a; }
+    .btn-sidebar.ativo { background-color: #2E6A8E; color: white; }
+    .btn-sidebar.ativo:hover { color: white; }
+    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 16px 0; }
+    .sidebar-footer { display: flex; flex-direction: column; gap: 10px; }
+    .btn-sidebar-link {
+        background: none; border: none; padding: 8px 4px;
+        text-align: left; color: #1a1a1a; font-size: 0.95rem;
+        text-decoration: none; display: block;
+        transition: color 0.2s ease; font-weight: 500;
+    }
+    .btn-sidebar-link:hover { color: #2E6A8E; }
+    .btn-sair { color: #F24822; }
+    .btn-sair:hover { color: #c03518; }
+
+    .main-content {
+        margin-left: 260px;
+        padding: 48px;
+        flex: 1;
+        width: calc(100% - 260px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .main-titulo { font-size: 1.8rem; font-weight: 700; margin-bottom: 4px; text-align: center; width: 100%; }
+    .main-subtitulo { color: #888; font-size: 0.9rem; font-weight: 400; text-align: center; margin-bottom: 32px; width: 100%; }
+
+    .card-form {
         background: white;
         border-radius: 16px;
         padding: 40px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        width: 100%;
+        max-width: 700px;
     }
-    .table th { font-weight: 600; color: #1a1a1a; }
-    .btn-voltar {
-        display: block;
-        text-align: center;
-        margin-top: 24px;
-        color: #2E6A8E;
-        text-decoration: none;
+
+    .alerta-erro {
+        background-color: #fdecea;
+        color: #F24822;
+        border: 1px solid #F24822;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        font-weight: 600;
+        width: 100%;
+        max-width: 700px;
+    }
+    .alerta-sucesso {
+        background-color: #e8f5e9;
+        color: #14ae5c;
+        border: 1px solid #14ae5c;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        font-weight: 600;
+        width: 100%;
+        max-width: 700px;
+    }
+
+    .table { width: 100%; border-collapse: collapse; }
+    .table th {
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 10px 14px;
+        border-bottom: 1px solid #f0f0f0;
+        text-align: left;
+    }
+    .table td {
+        padding: 12px 14px;
+        border-bottom: 1px solid #f0f0f0;
         font-size: 0.9rem;
+        vertical-align: middle;
     }
-    .btn-voltar:hover { text-decoration: underline; color: #2E6A8E; }
+    .table tr:last-child td { border-bottom: none; }
+    .table tr:hover td { background-color: #f8f8f6; }
+
     .btn-editar {
         background-color: #14ae5c;
         color: white;
         border: none;
         border-radius: 6px;
-        padding: 4px 12px;
-        font-size: 0.875rem;
-        transition: background-color 0.2s ease, transform 0.1s ease;
+        padding: 5px 14px;
+        font-size: 0.82rem;
+        font-weight: 600;
         text-decoration: none;
         display: inline-block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
     }
-    /* hover: escurece levemente e sobe um pouco — feedback visual claro */
-    .btn-editar:hover {
-        background-color: #0e8a48;
-        color: white;
-        transform: translateY(-1px);
-    }
+    .btn-editar:hover { background-color: #0e8a48; color: white; transform: translateY(-1px); }
+
     .btn-excluir {
-        background-color: #F24822;
-        color: white;
-        border: none;
+        background-color: transparent;
+        color: #F24822;
+        border: 1px solid #F24822;
         border-radius: 6px;
-        padding: 4px 12px;
-        font-size: 0.875rem;
-        transition: background-color 0.2s ease, transform 0.1s ease;
+        padding: 5px 14px;
+        font-size: 0.82rem;
+        font-weight: 600;
         text-decoration: none;
         display: inline-block;
+        transition: background-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+        margin-left: 6px;
     }
-    /* hover: escurece e sobe — padrão de botão destrutivo */
-    .btn-excluir:hover {
-        background-color: #c03518;
-        color: white;
-        transform: translateY(-1px);
-    }
+    .btn-excluir:hover { background-color: #F24822; color: white; transform: translateY(-1px); }
 </style>
 
-<div class="header-azul">
-    <img src="/images/logo.jpg" alt="Logo LalaKids" height="100" onerror="this.style.display='none'" />
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <img src="/images/logo.jpg" alt="Logo" onerror="this.style.display='none'" />
+    </div>
+    <nav class="sidebar-nav">
+        <a href="/produto/index" class="btn-sidebar">Estoque</a>
+        <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
+        <a href="/produto/movimentar" class="btn-sidebar">Movimentar Estoque</a>
+        <a href="/produto/relatorios" class="btn-sidebar">Relatórios</a>
+    </nav>
+    <hr class="sidebar-divider" />
+    <div class="sidebar-footer">
+        <a href="/Usuario/Index" class="btn-sidebar-link ativo" style="color: #2E6A8E; font-weight: 600;">Gerenciar Usuários</a>
+        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
+    </div>
 </div>
 
-<h2 class="titulo-pagina">Gerenciar Usuários</h2>
-
-<div class="conteudo">
+<div class="main-content">
+    <div class="main-titulo">Gerenciar Usuários</div>
+    <div class="main-subtitulo">Edite ou remova os usuários do sistema</div>
 
     @if (TempData["Sucesso"] != null)
     {
-        <div id="alertaSucesso" class="alert"
-             style="background-color: #4CAF50; color: white; border-radius: 8px; text-align: center; font-weight: 600; padding: 16px; margin-bottom: 16px;">
-            ✅ @TempData["Sucesso"]
+        <div id="alertaSucesso" class="alerta-sucesso">
+            @TempData["Sucesso"]
         </div>
         <script>
             setTimeout(function() {
@@ -96,9 +174,8 @@
 
     @if (TempData["Erro"] != null)
     {
-        <div id="alertaErro" class="alert"
-             style="background-color: #F24822; color: white; border-radius: 8px; text-align: center; font-weight: 600; padding: 16px; margin-bottom: 16px;">
-            ⚠️ @TempData["Erro"]
+        <div id="alertaErro" class="alerta-erro">
+            @TempData["Erro"]
         </div>
         <script>
             setTimeout(function() {
@@ -107,31 +184,33 @@
         </script>
     }
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Nome</th>
-            <th>Login</th>
-            <th>Ações</th>
-        </tr>
-        @foreach (var u in Model)
-        {
-            <tr>
-                <td>@u.Nome</td>
-                <td>@u.Login</td>
-                <td>
-                    <a href="/Usuario/Editar/@u.Id" class="btn-editar">Editar</a>
-
-                    @if (u.Id != Context.Session.GetString("UsuarioId"))
-                    {
-                        <a href="/Usuario/Delete/@u.Id" class="btn-excluir"
-                           onclick="return confirm('Tem certeza que deseja excluir o usuário @u.Nome?')">
-                            Excluir
-                        </a>
-                    }
-                </td>
-            </tr>
-        }
-    </table>
-
-    <a href="/Produto/Index" class="btn-voltar">Voltar para o estoque</a>
+    <div class="card-form">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Login</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td>@u.Nome</td>
+                        <td>@u.Login</td>
+                        <td>
+                            <a href="/Usuario/Editar/@u.Id" class="btn-editar">Editar</a>
+                            @if (u.Id != Context.Session.GetString("UsuarioId"))
+                            {
+                                <a href="/Usuario/Delete/@u.Id" class="btn-excluir"
+                                   onclick="return confirm('Tem certeza que deseja excluir o usuário @u.Nome?')">
+                                    Excluir
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
