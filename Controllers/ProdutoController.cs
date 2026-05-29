@@ -338,6 +338,12 @@ public class ProdutoController : Controller //herança do controller; produto é
 
     var itens = db.MovimentacaoItem.Where(i => i.IdMovimentacao == id).ToList();
 
+    if (!itens.Any())
+    {
+        TempData["Erro"] = "Esta movimentação não possui itens para desfazer.";
+        return RedirectToAction("RelatorioHistoricoMovimentacoes");
+    }
+
     // verifica se dá pra desfazer sem deixar estoque negativo
     foreach (var item in itens)
     {
@@ -346,10 +352,17 @@ public class ProdutoController : Controller //herança do controller; produto é
 
         if (produtoTamanho == null)
         {
-            TempData["Erro"] = $"Tamanho '{item.Tamanho}' não encontrado para desfazer.";
+            var produto = db.Produto.FirstOrDefault(p => p.Id == item.IdProduto);
+
+            if(produto == null)
+                TempData["Erro"] = "Não é possível desfazer - produto deletado depois dessa movimentação.";
+            else
+                TempData["Erro"] = $"Não é possível desfazer — tamanho '{item.Tamanho}' de '{produto.Nome}' foi removido depois desta movimentação.";
+        
             return RedirectToAction("RelatorioHistoricoMovimentacoes");
         }
-
+        
+        
         // desfazer entrada = subtrair — pode deixar negativo?
         if (movimentacao.Tipo == "entrada" && produtoTamanho.Quantidade - item.Quantidade < 0)
         {
