@@ -325,6 +325,62 @@ public class ProdutoController : Controller //herança do controller; produto é
         return View(movimentacoes);
     }
 
+    public ActionResult DesfazerMovimentacao(string id)
+    {
+    if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+
+    var movimentacao = db.Movimentacao.SingleOrDefault(m => m.Id == id);
+    if (movimentacao == null)
+    {
+        TempData["Erro"] = "Movimentação não encontrada.";
+        return RedirectToAction("RelatorioHistoricoMovimentacoes");
+    }
+
+    var itens = db.MovimentacaoItem.Where(i => i.IdMovimentacao == id).ToList();
+
+    // verifica se dá pra desfazer sem deixar estoque negativo
+    foreach (var item in itens)
+    {
+        var produtoTamanho = db.ProdutoTamanho
+            .FirstOrDefault(pt => pt.IdProduto == item.IdProduto && pt.Tamanho == item.Tamanho);
+
+        if (produtoTamanho == null)
+        {
+            TempData["Erro"] = $"Tamanho '{item.Tamanho}' não encontrado para desfazer.";
+            return RedirectToAction("RelatorioHistoricoMovimentacoes");
+        }
+
+        // desfazer entrada = subtrair — pode deixar negativo?
+        if (movimentacao.Tipo == "entrada" && produtoTamanho.Quantidade - item.Quantidade < 0)
+        {
+            var produto = db.Produto.FirstOrDefault(p => p.Id == item.IdProduto);
+            TempData["Erro"] = $"Não é possível desfazer — estoque atual de '{produto?.Nome}' tamanho {item.Tamanho} é {produtoTamanho.Quantidade}, menor que {item.Quantidade}.";
+            return RedirectToAction("RelatorioHistoricoMovimentacoes");
+        }
+    }
+
+    // tudo ok — desfaz
+    foreach (var item in itens)
+    {
+        var produtoTamanho = db.ProdutoTamanho
+            .FirstOrDefault(pt => pt.IdProduto == item.IdProduto && pt.Tamanho == item.Tamanho);
+
+        if (movimentacao.Tipo == "entrada")
+            produtoTamanho.Quantidade -= item.Quantidade; // desfaz entrada
+        else
+            produtoTamanho.Quantidade += item.Quantidade; // desfaz saída
+
+        db.ProdutoTamanho.Update(produtoTamanho);
+        db.MovimentacaoItem.Remove(item);
+    }
+
+    db.Movimentacao.Remove(movimentacao);
+    db.SaveChanges();
+
+    TempData["Sucesso"] = "Movimentação desfeita com sucesso!";
+    return RedirectToAction("RelatorioHistoricoMovimentacoes");
+    }
+
     public ActionResult DeletarTamanho(string id)
     {
         if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");

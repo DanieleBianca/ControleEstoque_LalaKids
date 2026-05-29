@@ -2,6 +2,17 @@
 
 <h1 class="mb-4">Histórico de Movimentações</h1>
 
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">⚠️ @TempData["Erro"]</div>
+}
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success">✅ @TempData["Sucesso"]</div>
+}
+
 @if (!Model.Any())
 {
     <div class="alert alert-info">Nenhuma movimentação registrada ainda.</div>
@@ -18,10 +29,16 @@ else
             .ToList();
 
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>@m.Data.ToString("dd/MM/yyyy HH:mm")</strong>
-                — @(m.Tipo == "entrada" ? "Entrada" : "Saída")
-                — <span class="text-muted">@(usuario?.Nome ?? "Usuário desconhecido")</span>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>
+                    <strong>@m.Data.ToString("dd/MM/yyyy HH:mm")</strong>
+                    — @(m.Tipo == "entrada" ? "Entrada" : "Saída")
+                    — <span class="text-muted">@(usuario?.Nome ?? "Usuário desconhecido")</span>
+                </span>
+                <a href="/produto/desfazermovimentacao/@m.Id"
+                class="btn btn-sm btn-outline-danger"
+                onclick="return confirm('Deseja desfazer esta movimentação?')">
+                 Desfazer </a>
             </div>
             <div class="card-body">
                 <table class="table table-sm mb-0">
