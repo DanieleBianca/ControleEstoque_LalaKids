@@ -251,7 +251,7 @@ db.Movimentacao.Add(movimentacao);
         TempData["Sucesso"] = "Estoque atualizado com sucesso!";
 
     return RedirectToAction("Movimentar");
-}
+    }
     // abre a tela de seleção de relatórios
     public ActionResult Relatorios()
     {
