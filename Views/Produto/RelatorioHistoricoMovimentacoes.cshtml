@@ -166,6 +166,16 @@
 </div>
 
 <div class="main-content">
+
+    @if (TempData["Erro"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Erro"]</div>
+    }
+    @if (TempData["Sucesso"] != null)
+    {
+        <div class="alert alert-success">@TempData["Sucesso"]</div>
+    }
+
     <div class="page-header">
         <div>
             <div class="main-titulo">Histórico de Movimentações</div>
