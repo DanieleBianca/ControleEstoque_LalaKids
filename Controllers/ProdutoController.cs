@@ -262,26 +262,6 @@ public class ProdutoController : Controller //herança do controller; produto é
         return View();
     }
 
-    // relatório: produtos que mais saem
-    public ActionResult RelatorioProdutosMaisVendidos()
-    {
-        // agrupa as movimentações de saída por produto e soma as quantidades
-        // isso é LINQ avançado: GroupBy agrupa, Sum soma, OrderByDescending ordena do maior pro menor
-        var resultado = db.MovimentacaoItem
-            .Where(mi => db.Movimentacao
-                .Any(m => m.Id == mi.IdMovimentacao && m.Tipo == "saida"))
-            .GroupBy(mi => mi.IdProduto)
-            .Select(g => new {
-                IdProduto = g.Key,
-                TotalSaidas = g.Sum(mi => mi.Quantidade)
-            })
-        .OrderByDescending(x => x.TotalSaidas)
-        .ToList();
-
-        ViewBag.Produtos = db.Produto.ToList();
-        return View(resultado);
-    }
-
     // relatório: estoque baixo (tamanhos com quantidade menor ou igual a 2)
     public ActionResult RelatorioEstoqueBaixo()
     {
@@ -295,25 +275,6 @@ public class ProdutoController : Controller //herança do controller; produto é
         return View(tamanhosBaixos);
     }
 
-    // relatório: histórico por produto — recebe o id do produto pela URL
-    public ActionResult RelatorioHistoricoPorProduto(string id)
-    {
-        // se não recebeu id, mostra lista de produtos para escolher
-        if (string.IsNullOrEmpty(id))
-        {
-            return View("SelecionarProduto", db.Produto.ToList());
-        }
-
-        var produto = db.Produto.Single(p => p.Id == id);
-
-        // busca todas as movimentações desse produto específico — relacionamento 1:N
-        var movimentacoes = db.MovimentacaoItem
-            .Where(mi => mi.IdProduto == id)
-            .ToList();
-
-        ViewBag.Produto = produto;
-        return View(movimentacoes);
-    }
 
     // relatório: histórico de todas as movimentações com seus itens
     public ActionResult RelatorioHistoricoMovimentacoes()
