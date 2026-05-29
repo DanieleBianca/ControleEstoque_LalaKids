@@ -15,7 +15,11 @@ public class ProdutoController : Controller //herança do controller; produto é
         ViewBag.ProdutoTamanhos = db.ProdutoTamanho.ToList(); // passa os tamanhos pra view
         ViewBag.Busca = busca;
 
-        var produtos = db.Produto.ToList();
+        // ORDENA ALFABETICAMENTE PELO NOME
+        var produtos = db.Produto
+            .OrderBy(p => p.Nome)
+            .ToList();
+            
         if (!string. IsNullOrEmpty(busca)) 
         {
             produtos = produtos.Where(p =>
