@@ -170,24 +170,24 @@
             <input type="hidden" name="Id" value="@Model.Id" />
 
             <div class="mb-3">
-                <label class="form-label">Código de Barras</label>
-                <input class="form-control" name="CodigoBarras" value="@Model.CodigoBarras" />
+                <label class="form-label">Código de Barras*</label>
+                <input class="form-control" name="CodigoBarras" value="@Model.CodigoBarras" required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Nome</label>
-                <input class="form-control" name="Nome" value="@Model.Nome" />
+                <label class="form-label">Nome*</label>
+                <input class="form-control" name="Nome" value="@Model.Nome" required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Marca</label>
-                <input class="form-control" name="Marca" value="@Model.Marca" />
+                <label class="form-label">Marca*</label>
+                <input class="form-control" name="Marca" value="@Model.Marca" required/>
             </div>
             <div class="mb-3">
-                <label class="form-label">Valor de Compra</label>
-                <input class="form-control" name="ValorCompra" value="@Model.ValorCompra" />
+                <label class="form-label">Valor de Compra*</label>
+                <input class="form-control" name="ValorCompra" value="@Model.ValorCompra" required />
             </div>
             <div class="mb-3">
-                <label class="form-label">Valor de Revenda</label>
-                <input class="form-control" name="ValorRevenda" value="@Model.ValorRevenda" />
+                <label class="form-label">Valor de Revenda*</label>
+                <input class="form-control" name="ValorRevenda" value="@Model.ValorRevenda" required />
             </div>
 
             <p class="secao-titulo">Tamanhos e Quantidades</p>
