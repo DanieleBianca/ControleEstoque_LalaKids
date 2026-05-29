@@ -180,7 +180,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         Tipo = tipo,
         Data = DateTime.Now
     };
-db.Movimentacao.Add(movimentacao);
+    db.Movimentacao.Add(movimentacao);
 
     for (int i = 0; i < CodigosBarras.Length; i++)
     {
@@ -244,7 +244,6 @@ db.Movimentacao.Add(movimentacao);
     }
 
     db.SaveChanges();
-
     if (erros.Any())
         TempData["Erro"] = string.Join(" | ", erros);
     else
@@ -252,6 +251,7 @@ db.Movimentacao.Add(movimentacao);
 
     return RedirectToAction("Movimentar");
     }
+
     // abre a tela de seleção de relatórios
     public ActionResult Relatorios()
     {
