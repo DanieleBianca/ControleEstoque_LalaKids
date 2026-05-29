@@ -1,9 +1,13 @@
+@using System.Linq
 @model IEnumerable<Usuario>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-    * { font-family: 'Poppins', sans-serif; color: #1a1a1a; }
+    * {
+        font-family: 'Poppins', sans-serif;
+        color: #1a1a1a;
+    }
 
     body {
         background-color: #f8f8f6;
@@ -53,12 +57,22 @@
         text-align: left;
         text-decoration: none;
         display: block;
-        transition: 0.2s;
+        transition: background-color 0.2s ease, transform 0.1s ease;
     }
 
     .btn-sidebar:hover {
         background-color: #e8f0f5;
         transform: translateX(3px);
+        color: #1a1a1a;
+    }
+
+    .btn-sidebar.ativo {
+        background-color: #2E6A8E;
+        color: white;
+    }
+
+    .btn-sidebar.ativo:hover {
+        color: white;
     }
 
     .sidebar-divider {
@@ -82,7 +96,7 @@
         font-size: 0.95rem;
         text-decoration: none;
         display: block;
-        transition: 0.2s;
+        transition: color 0.2s ease;
         font-weight: 500;
     }
 
@@ -94,50 +108,104 @@
         color: #F24822;
     }
 
+    .btn-sair:hover {
+        color: #c03518;
+    }
+
     .main-content {
         margin-left: 260px;
         padding: 48px;
         flex: 1;
+        width: calc(100% - 260px);
+    }
+
+    .main-header {
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin-bottom: 40px;
+        text-align: center;
     }
 
     .main-titulo {
         font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 4px;
+        text-align: center;
     }
 
     .main-subtitulo {
         color: #888;
         font-size: 0.9rem;
-        margin-bottom: 32px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom: 20px;
     }
 
-    .card-form {
+    .btn-novo {
+        background-color: #2E6A8E;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 22px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-novo:hover {
+        background-color: #245a7a;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .tabela-wrapper {
         background: white;
         border-radius: 16px;
-        padding: 40px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        overflow: hidden;
+        max-width: 760px;
         width: 100%;
-        max-width: 700px;
+        margin: 0 auto;
     }
 
     .table {
         width: 100%;
+        margin: 0;
         border-collapse: collapse;
     }
 
+    .table thead tr {
+        border-bottom: 1px solid #f0f0f0;
+    }
+
     .table th {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
+        font-weight: 600;
+        font-size: 0.78rem;
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        padding: 16px 20px;
         text-align: left;
     }
 
     .table td {
-        padding: 12px;
-        border-bottom: 1px solid #eee;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.92rem;
+        vertical-align: middle;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    .usuario-nome {
+        font-weight: 500;
     }
 
     .btn-editar {
@@ -145,10 +213,18 @@
         color: white;
         border: none;
         border-radius: 6px;
-        padding: 6px 14px;
-        text-decoration: none;
-        font-size: 0.82rem;
+        padding: 5px 14px;
+        font-size: 0.8rem;
         font-weight: 600;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-editar:hover {
+        background-color: #0e8a48;
+        color: white;
+        transform: translateY(-1px);
     }
 
     .btn-excluir {
@@ -156,31 +232,33 @@
         color: #F24822;
         border: 1px solid #F24822;
         border-radius: 6px;
-        padding: 6px 14px;
-        text-decoration: none;
-        font-size: 0.82rem;
+        padding: 5px 14px;
+        font-size: 0.8rem;
         font-weight: 600;
-        margin-left: 6px;
-    }
-
-    .acoes {
-        margin-top: 24px;
-    }
-
-    .btn-confirmar {
-        background-color: #2E6A8E;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        padding: 12px 36px;
-        font-weight: 700;
         text-decoration: none;
+        display: inline-block;
+        margin-left: 6px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-excluir:hover {
+        background-color: #F24822;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .alerta {
+        border-radius: 12px;
+        padding: 16px 20px;
+        font-size: 0.9rem;
+        margin-bottom: 24px;
     }
 </style>
 
 <div class="sidebar">
     <div class="sidebar-logo">
-        <img src="/images/logo.jpg" alt="Logo" />
+        <img src="/images/logo.jpg" alt="Logo"
+             onerror="this.style.display='none'" />
     </div>
 
     <nav class="sidebar-nav">
@@ -193,58 +271,75 @@
     <hr class="sidebar-divider" />
 
     <div class="sidebar-footer">
-        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
-        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
+        <a href="/Usuario/Index"
+           class="btn-sidebar-link"
+           style="color: #2E6A8E; font-weight: 600;">
+            Gerenciar Usuários
+        </a>
+
+        <a href="/Usuario/Logout"
+           class="btn-sidebar-link btn-sair">
+            Sair
+        </a>
     </div>
 </div>
 
 <div class="main-content">
-
-    <div class="main-titulo">Gerenciar Usuários</div>
-    <div class="main-subtitulo">Edite ou remova os usuários do sistema</div>
-
-    <div class="card-form">
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Login</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var u in Model)
-                {
-                    <tr>
-                        <td>@u.Nome</td>
-                        <td>@u.Login</td>
-
-                        <td>
-                            <a href="/Usuario/Editar/@u.Id" class="btn-editar">
-                                Editar
-                            </a>
-
-                            @if (u.Id != Context.Session.GetString("UsuarioId"))
-                            {
-                                <a href="/Usuario/Delete/@u.Id"
-                                   class="btn-excluir"
-                                   onclick="return confirm('Excluir @u.Nome?')">
-                                    Excluir
-                                </a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-
-        <div class="acoes">
-            <a href="/Usuario/Cadastro" class="btn-confirmar">
-                Novo Usuário
-            </a>
+    <div class="main-header">
+        <div>
+            <div class="main-titulo">Gerenciar Usuários</div>
+            <div class="main-subtitulo">
+                Edite ou remova os usuários do sistema
+            </div>
         </div>
-
+        </a>
     </div>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info alerta">
+            Nenhum usuário cadastrado.
+        </div>
+    }
+    else
+    {
+        <div class="tabela-wrapper">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Login</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="usuario-nome">
+                                    @u.Nome
+                                </span>
+                            </td>
+                            <td>
+                                @u.Login
+                            </td>
+                            <td>
+                                <a href="/Usuario/Editar/@u.Id"
+                                   class="btn-editar">
+                                    Editar
+                                </a>
+                                @if (u.Id != Context.Session.GetString("UsuarioId"))
+                                {
+                                    <a href="/Usuario/Delete/@u.Id"
+                                       class="btn-excluir"
+                                       onclick="return confirm('Tem certeza que deseja excluir @u.Nome?')">
+                                        Excluir
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>

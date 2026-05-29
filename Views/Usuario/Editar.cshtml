@@ -53,6 +53,22 @@
         text-align: left;
         text-decoration: none;
         display: block;
+        transition: background-color 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-sidebar:hover {
+        background-color: #e8f0f5;
+        transform: translateX(3px);
+        color: #1a1a1a;
+    }
+
+    .btn-sidebar.ativo {
+        background-color: #2E6A8E;
+        color: white;
+    }
+
+    .btn-sidebar.ativo:hover {
+        color: white;
     }
 
     .sidebar-divider {
@@ -75,17 +91,29 @@
         color: #1a1a1a;
         font-size: 0.95rem;
         text-decoration: none;
+        display: block;
+        transition: color 0.2s ease;
         font-weight: 500;
+    }
+
+    .btn-sidebar-link:hover {
+        color: #2E6A8E;
     }
 
     .btn-sair {
         color: #F24822;
     }
 
+    .btn-sair:hover {
+        color: #c03518;
+    }
+
     .main-content {
         margin-left: 260px;
         padding: 48px;
         flex: 1;
+        width: calc(100% - 260px);
+
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -95,12 +123,17 @@
         font-size: 1.8rem;
         font-weight: 700;
         margin-bottom: 4px;
+        text-align: center;
+        width: 100%;
     }
 
     .main-subtitulo {
         color: #888;
         font-size: 0.9rem;
+        font-weight: 400;
+        text-align: center;
         margin-bottom: 32px;
+        width: 100%;
     }
 
     .card-form {
@@ -109,32 +142,46 @@
         padding: 40px;
         box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         width: 100%;
-        max-width: 700px;
+        max-width: 500px;
     }
 
     .campo {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
 
-    .campo label {
-        margin-bottom: 8px;
+    .form-label {
         font-weight: 600;
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 6px;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
     }
 
-    .campo input {
-        padding: 12px;
-        border: 1px solid #ddd;
+    .form-control {
+        background-color: #f8f8f6;
+        border: 1px solid #ebebeb;
         border-radius: 8px;
+        padding: 12px 14px;
+        color: #1a1a1a;
+        width: 100%;
         font-size: 0.95rem;
+        transition: border-color 0.2s ease, background-color 0.2s ease;
+        box-sizing: border-box;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #2E6A8E;
+        background-color: white;
     }
 
     .acoes {
         display: flex;
         align-items: center;
         gap: 16px;
-        margin-top: 24px;
+        margin-top: 28px;
     }
 
     .btn-confirmar {
@@ -144,18 +191,34 @@
         border-radius: 8px;
         padding: 12px 36px;
         font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.04em;
+        transition: background-color 0.2s ease, transform 0.1s ease;
         cursor: pointer;
     }
 
+    .btn-confirmar:hover {
+        background-color: #245a7a;
+        transform: translateY(-1px);
+        color: white;
+    }
+
     .link-cancelar {
-        color: #888;
+        color: #aaa;
         text-decoration: none;
+        font-size: 0.88rem;
+        transition: color 0.2s ease;
+    }
+
+    .link-cancelar:hover {
+        color: #555;
+        text-decoration: underline;
     }
 </style>
 
 <div class="sidebar">
     <div class="sidebar-logo">
-        <img src="/images/logo.jpg" alt="Logo" />
+        <img src="/images/logo.jpg" alt="Logo" onerror="this.style.display='none'" />
     </div>
 
     <nav class="sidebar-nav">
@@ -168,15 +231,24 @@
     <hr class="sidebar-divider" />
 
     <div class="sidebar-footer">
-        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
-        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
+        <a href="/Usuario/Index"
+           class="btn-sidebar-link"
+           style="color: #2E6A8E; font-weight: 600;">
+            Gerenciar Usuários
+        </a>
+
+        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">
+            Sair
+        </a>
     </div>
 </div>
 
 <div class="main-content">
 
     <div class="main-titulo">Editar Usuário</div>
-    <div class="main-subtitulo">Atualize as informações do usuário</div>
+    <div class="main-subtitulo">
+        Atualize as informações do usuário
+    </div>
 
     <div class="card-form">
 
@@ -185,21 +257,24 @@
             <input type="hidden" asp-for="Id" />
 
             <div class="campo">
-                <label>Nome</label>
-                <input asp-for="Nome" />
+                <label class="form-label">Nome</label>
+                <input asp-for="Nome" class="form-control" />
             </div>
 
             <div class="campo">
-                <label>Login</label>
-                <input asp-for="Login" />
+                <label class="form-label">Login</label>
+                <input asp-for="Login" class="form-control" />
             </div>
 
             <div class="campo">
-                <label>Senha</label>
-                <input asp-for="Senha" />
+                <label class="form-label">Senha</label>
+                <input asp-for="Senha"
+                       class="form-control"
+                       type="password" />
             </div>
 
             <div class="acoes">
+
                 <button type="submit" class="btn-confirmar">
                     Salvar Alterações
                 </button>
@@ -207,9 +282,11 @@
                 <a href="/Usuario/Index" class="link-cancelar">
                     Cancelar
                 </a>
+
             </div>
 
         </form>
 
     </div>
+
 </div>
