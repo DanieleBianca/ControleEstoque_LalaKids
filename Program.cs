@@ -16,6 +16,8 @@ builder.Services.AddSession(options => {
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
 app.UseSession();//parte de usuarios
 
 app.MapControllerRoute("default", "{controller=Usuario}/{action=Login}/{id?}");
