@@ -205,7 +205,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         var produtoTamanho = db.ProdutoTamanho
             .FirstOrDefault(pt => pt.IdProduto == produto.Id && pt.Tamanho == tamanho);
 
-        if (produtoTamanho == null && tipo == "entrada")
+        if (produtoTamanho != null && tipo == "entrada")
         {
             produtoTamanho = new ProdutoTamanho
             {
@@ -287,7 +287,26 @@ public class ProdutoController : Controller //herança do controller; produto é
         ViewBag.Produtos = db.Produto.ToList();
         ViewBag.Usuarios = db.Usuario.ToList();
 
+        ViewBag.Movimentacoes = db.Movimentacao.ToList();
         return View(movimentacoes);
+
+    }
+
+    public ActionResult RelatorioHistoricoPorProduto(string id)
+    {
+        if (string.IsNullOrEmpty(id))
+        {
+            return View("SelecionarProduto", db.Produto.ToList());
+        }
+
+        var produto = db.Produto.Single(p => p.Id == id);
+        var movimentacoes = db.MovimentacaoItem
+            .Where(mi => mi.IdProduto == id)
+            .ToList();
+
+        ViewBag.Produto = produto;
+        ViewBag.Movimentacoes = db.Movimentacao.ToList();
+        return View("RelatorioHistoricoPorProduto", movimentacoes);
     }
 
     public ActionResult DesfazerMovimentacao(string id)
