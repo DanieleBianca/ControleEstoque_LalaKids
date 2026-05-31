@@ -52,19 +52,19 @@ public class ProdutoController : Controller //herança do controller; produto é
         var existe = db.Produto.Any(x => x.CodigoBarras == p.CodigoBarras);
         if (existe)
         {
-            TempData["Erro"] = "Código de barras ja cadastrado.";
+            TempData["Erro"] = "Código de barras já cadastrado";
             return RedirectToAction("Create");
         }
 
         if (p.ValorCompra < 0 || p.ValorRevenda < 0)
         {
-            TempData["Erro"] = "Valores de compra e revenda não podem ser negativos.";
+            TempData["Erro"] = "Valores de compra e revenda não podem ser negativos";
             return RedirectToAction("Create");
         }
 
         if (Quantidades.Any(q => q < 0))
         {
-            TempData["Erro"] = "Quantidade não pode ser negativa.";
+            TempData["Erro"] = "Quantidade não pode ser negativa";
             return RedirectToAction("Create");
         }
 
@@ -122,13 +122,13 @@ public class ProdutoController : Controller //herança do controller; produto é
     //impede editar valores para negativo
     if (p.ValorCompra < 0 || p.ValorRevenda < 0)
     {
-        TempData["Erro"] = "Valores de compra e revenda não podem ser negativos.";
+        TempData["Erro"] = "Valores de compra e revenda não podem ser negativos";
         return RedirectToAction("Update", new { id = p.Id });
     }
 
     if (Quantidades.Any(q => q < 0))
     {
-        TempData["Erro"] = "Quantidade não pode ser negativa.";
+        TempData["Erro"] = "Quantidade não pode ser negativa";
         return RedirectToAction("Update", new { id = p.Id });
     }
 
@@ -198,7 +198,7 @@ public class ProdutoController : Controller //herança do controller; produto é
 
         if (produto == null)
         {
-            erros.Add($"Produto '{codigoBarras}' não encontrado.");
+            erros.Add($"Produto '{codigoBarras}' não encontrado");
             continue;
         }
 
@@ -218,14 +218,14 @@ public class ProdutoController : Controller //herança do controller; produto é
         }
         else if (produtoTamanho == null && tipo == "saida")
         {
-            erros.Add($"Tamanho '{tamanho}' não encontrado para '{produto.Nome}'.");
+            erros.Add($"Tamanho '{tamanho}' não encontrado em '{produto.Nome}'");
             continue;
         }
         else
         {
             if (tipo == "saida" && quantidade > produtoTamanho.Quantidade)
             {
-                erros.Add($"Estoque insuficiente para '{produto.Nome}' tamanho {tamanho}. Disponível: {produtoTamanho.Quantidade}.");
+                erros.Add($"Estoque insuficiente para '{produto.Nome}' no tamanho {tamanho}. Disponível: {produtoTamanho.Quantidade}");
                 continue;
             }
 
@@ -251,7 +251,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     if (erros.Any())
         TempData["Erro"] = string.Join(" | ", erros);
     else
-        TempData["Sucesso"] = "Estoque atualizado com sucesso!";
+        TempData["Sucesso"] = "Estoque atualizado com sucesso";
 
     return RedirectToAction("Movimentar");
     }
@@ -297,7 +297,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     var movimentacao = db.Movimentacao.SingleOrDefault(m => m.Id == id);
     if (movimentacao == null)
     {
-        TempData["Erro"] = "Movimentação não encontrada.";
+        TempData["Erro"] = "Movimentação não encontrada";
         return RedirectToAction("RelatorioHistoricoMovimentacoes");
     }
 
@@ -305,7 +305,7 @@ public class ProdutoController : Controller //herança do controller; produto é
 
     if (!itens.Any())
     {
-        TempData["Erro"] = "Esta movimentação não possui itens para desfazer.";
+        TempData["Erro"] = "Esta movimentação não possui itens para desfazer";
         return RedirectToAction("RelatorioHistoricoMovimentacoes");
     }
 
@@ -320,9 +320,9 @@ public class ProdutoController : Controller //herança do controller; produto é
             var produto = db.Produto.FirstOrDefault(p => p.Id == item.IdProduto);
 
             if(produto == null)
-                TempData["Erro"] = "Não é possível desfazer - produto deletado depois dessa movimentação.";
+                TempData["Erro"] = "Não é possível desfazer - produto deletado depois dessa movimentação";
             else
-                TempData["Erro"] = $"Não é possível desfazer — tamanho '{item.Tamanho}' de '{produto.Nome}' foi removido depois desta movimentação.";
+                TempData["Erro"] = $"Não é possível desfazer - tamanho '{item.Tamanho}' de '{produto.Nome}' foi removido depois desta movimentação.";
         
             return RedirectToAction("RelatorioHistoricoMovimentacoes");
         }
@@ -332,7 +332,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         if (movimentacao.Tipo == "entrada" && produtoTamanho.Quantidade - item.Quantidade < 0)
         {
             var produto = db.Produto.FirstOrDefault(p => p.Id == item.IdProduto);
-            TempData["Erro"] = $"Não é possível desfazer — estoque atual de '{produto?.Nome}' tamanho {item.Tamanho} é {produtoTamanho.Quantidade}, menor que {item.Quantidade}.";
+            TempData["Erro"] = $"Não é possível desfazer - estoque atual de '{produto?.Nome}' no tamanho {item.Tamanho} é {produtoTamanho.Quantidade}, menor que {item.Quantidade}.";
             return RedirectToAction("RelatorioHistoricoMovimentacoes");
         }
     }
@@ -355,7 +355,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     db.Movimentacao.Remove(movimentacao);
     db.SaveChanges();
 
-    TempData["Sucesso"] = "Movimentação desfeita com sucesso!";
+    TempData["Sucesso"] = "Movimentação desfeita com sucesso";
     return RedirectToAction("RelatorioHistoricoMovimentacoes");
     }
 

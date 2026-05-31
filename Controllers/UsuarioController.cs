@@ -26,13 +26,13 @@ public class UsuarioController : Controller
         var existe = db.Usuario.Any(x => x.Login == u.Login);
         if (existe)
         {
-            TempData["Erro"] = "Este login já está em uso. Escolha outro.";
+            TempData["Erro"] = "Este login já está em uso. Escolha outro";
             return RedirectToAction("Cadastro");
         }
         u.Id = Guid.NewGuid().ToString();
         db.Usuario.Add(u);
         db.SaveChanges();
-        TempData["Sucesso"] = $"Usuário {u.Nome} cadastrado com sucesso!";
+        TempData["Sucesso"] = $"Usuário \"{u.Nome}\" cadastrado com sucesso";
         return RedirectToAction("Login");
     }
 
@@ -50,7 +50,7 @@ public class UsuarioController : Controller
 
         if (usuario == null)
         {
-            ViewBag.Erro = "Login ou senha inválidos.";
+            ViewBag.Erro = "Login ou senha inválidos";
             return View();
         }
 
@@ -67,17 +67,11 @@ public class UsuarioController : Controller
 
     public ActionResult Delete(string id)
     {
-        var idLogado = HttpContext.Session.GetString("UsuarioId");
-        if (id == idLogado)
-        {
-            TempData["Erro"] = "Você não pode excluir o usuário logado!";
-            return RedirectToAction("Index");
-        }
 
         var usuario = db.Usuario.Single(u => u.Id == id);
         db.Usuario.Remove(usuario);
         db.SaveChanges();
-        TempData["Sucesso"] = $"Usuário {usuario.Nome} excluído com sucesso!";
+        TempData["Sucesso"] = $"Usuário \"{usuario.Nome}\" excluído com sucesso";
         return RedirectToAction("Index");
     }
 
@@ -93,7 +87,7 @@ public class UsuarioController : Controller
     {
         db.Usuario.Update(u);
         db.SaveChanges();
-        TempData["Sucesso"] = $"Usuário {u.Nome} atualizado com sucesso!";
+        TempData["Sucesso"] = $"Usuário \"{u.Nome}\" atualizado com sucesso";
         return RedirectToAction("Index");
     }
 }
