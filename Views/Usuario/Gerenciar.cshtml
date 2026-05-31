@@ -247,6 +247,7 @@
 </div>
 
 <div class="main-content">
+
     <div class="main-header">
         <div>
             <div class="main-titulo">Gerenciar Usuários</div>
@@ -256,6 +257,20 @@
         </div>
         </a>
     </div>
+
+    @if (TempData["Sucesso"] != null)
+    {
+    <div id="alertaSucesso" class="alert alert-success alerta">
+        @TempData["Sucesso"]
+    </div>
+
+    <script>
+        setTimeout(function () {
+            document.getElementById('alertaSucesso').style.display = 'none';
+        }, 3000);
+    </script>
+    }
+
     @if (!Model.Any())
     {
         <div class="alert alert-info alerta">
