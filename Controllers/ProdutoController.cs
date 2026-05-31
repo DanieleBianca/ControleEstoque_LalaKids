@@ -205,7 +205,7 @@ public class ProdutoController : Controller //herança do controller; produto é
         var produtoTamanho = db.ProdutoTamanho
             .FirstOrDefault(pt => pt.IdProduto == produto.Id && pt.Tamanho == tamanho);
 
-        if (produtoTamanho != null && tipo == "entrada")
+        if (produtoTamanho == null && tipo == "entrada")
         {
             produtoTamanho = new ProdutoTamanho
             {
@@ -377,6 +377,7 @@ public class ProdutoController : Controller //herança do controller; produto é
     TempData["Sucesso"] = "Movimentação desfeita com sucesso";
     return RedirectToAction("RelatorioHistoricoMovimentacoes");
     }
+
 
     public ActionResult DeletarTamanho(string id)
     {
