@@ -7,45 +7,62 @@
     body { background-color: #f8f8f6; margin: 0; padding: 0; display: flex; min-height: 100vh; }
 
     .sidebar {
-        width: 260px;
+        width: 220px;
         min-height: 100vh;
         background-color: #BDD7E7;
         display: flex;
         flex-direction: column;
-        padding: 24px 16px;
+        padding: 28px 16px;
         position: fixed;
         top: 0; left: 0;
-        box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+        border-right: 1px solid rgba(0,0,0,0.06);
     }
-    .sidebar-logo { text-align: center; margin-bottom: 32px; }
-    .sidebar-logo img { height: 80px; object-fit: contain; }
+    .sidebar-logo { text-align: center; margin-bottom: 40px; }
+    .sidebar-logo img { width: 140px; height: auto; object-fit: contain; }
     .sidebar-nav { display: flex; flex-direction: column; gap: 10px; flex: 1; }
     .btn-sidebar {
-        background-color: white;
-        color: #1a1a1a;
+        background-color: transparent;
+        color: #1a1a1a; /* azul escuro legível sobre o fundo azul */
         border: none;
         border-radius: 8px;
-        padding: 12px 16px;
-        font-weight: 600;
+        padding: 10px 14px;
+        font-weight: 500;
+        font-size: 0.9rem;
         text-align: left;
         text-decoration: none;
         display: block;
-        transition: background-color 0.2s ease, transform 0.1s ease;
+        transition: color 0.2s ease, background-color 0.2s ease;
     }
-    .btn-sidebar:hover { background-color: #e8f0f5; transform: translateX(3px); color: #1a1a1a; }
-    .btn-sidebar.ativo { background-color: #2E6A8E; color: white; }
-    .btn-sidebar.ativo:hover { color: white; }
-    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.15); margin: 16px 0; }
-    .sidebar-footer { display: flex; flex-direction: column; gap: 10px; }
+    .btn-sidebar:hover {
+        background-color: rgba(255,255,255,0.35); /* branco translúcido no hover */
+        color: #1a1a1a;
+    }
+    .btn-sidebar.ativo {
+        background-color: rgba(255,255,255,0.5); /* mais opaco no ativo */
+        color: #1a3a50;
+        font-weight: 700;
+    }
+    .btn-sidebar.ativo:hover { color: #1a3a50; }
+
+    .sidebar-divider { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px 0; }
+    .sidebar-footer { display: flex; flex-direction: column; gap: 2px; }
     .btn-sidebar-link {
-        background: none; border: none; padding: 8px 4px;
-        text-align: left; color: #1a1a1a; font-size: 0.95rem;
-        text-decoration: none; display: block;
-        transition: color 0.2s ease; font-weight: 500;
+        background: none;
+        border: none;
+        padding: 10px 14px;
+        text-align: left;
+        color: #2a4a5e;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: block;
+        transition: color 0.2s ease, background-color 0.2s ease;
+        font-weight: 500;
+        border-radius: 8px;
     }
-    .btn-sidebar-link:hover { color: #2E6A8E; }
-    .btn-sair { color: #F24822; }
-    .btn-sair:hover { color: #c03518; }
+    .btn-sidebar-link:hover { background-color: rgba(255,255,255,0.35); color: #1a1a1a; }
+    .btn-sair { color: #a83210 !important; }
+    .btn-sair:hover { background-color: rgba(242,72,34,0.12) !important; color: #a83210 !important; }
+
 
     .main-content {
         margin-left: 260px;
@@ -158,22 +175,22 @@
     }
     </style>
 
-    <div class="sidebar">
-        <div class="sidebar-logo">
-            <img src="/images/logo.png" alt="Logo" onerror="this.style.display='none'" />
-        </div>
-        <nav class="sidebar-nav">
-            <a href="/produto/index" class="btn-sidebar">Estoque</a>
-            <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
-            <a href="/produto/movimentar" class="btn-sidebar">Movimentar Estoque</a>
-            <a href="/produto/relatorios" class="btn-sidebar ativo">Relatórios</a>
-        </nav>
-        <hr class="sidebar-divider" />
-        <div class="sidebar-footer">
-            <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
-            <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
-        </div>
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <img src="/images/logo.png" alt="Logo" onerror="this.style.display='none'" />
     </div>
+    <nav class="sidebar-nav">
+        <a href="/produto/index" class="btn-sidebar">Estoque</a>
+        <a href="/produto/create" class="btn-sidebar">Novo Produto</a>
+        <a href="/produto/movimentar" class="btn-sidebar ativo">Movimentar Estoque</a>
+        <a href="/produto/relatorios" class="btn-sidebar">Relatórios</a>
+    </nav>
+    <hr class="sidebar-divider" />
+    <div class="sidebar-footer">
+        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
+        <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
+    </div>
+</div>
 
 <div class="main-content">
     <div class="page-header">
