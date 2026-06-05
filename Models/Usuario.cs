@@ -4,4 +4,5 @@ public class Usuario ////classe que representa um usuário, com propriedades e d
     public string Nome { get; set; } = "";
     public string Login { get; set; } = "";
     public string Senha { get; set; } = "";
+    public string Tipo { get; set; } = "funcionario";
 }

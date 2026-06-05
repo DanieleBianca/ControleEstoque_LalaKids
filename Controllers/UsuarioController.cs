@@ -9,8 +9,19 @@ public class UsuarioController : Controller
         this.db = db;
     }
 
+    private bool IsAdmin()
+    {
+        return HttpContext.Session.GetString("UsuarioTipo") == "admin";
+    }
+
+    private bool UsuarioLogado()
+    {
+        return HttpContext.Session.GetString("UsuarioId") != null;
+    }
+
     public ActionResult Index()
     {
+        if (!IsAdmin()) return RedirectToAction("Index", "Produto");
         return View("Gerenciar", db.Usuario.ToList());
     }
 
@@ -30,6 +41,7 @@ public class UsuarioController : Controller
             return RedirectToAction("Cadastro");
         }
         u.Id = Guid.NewGuid().ToString();
+        u.Tipo = "funcionario"; // novo usuário sempre começa como funcionário
         db.Usuario.Add(u);
         db.SaveChanges();
         TempData["Sucesso"] = $"Usuário \"{u.Nome}\" cadastrado com sucesso";
@@ -54,6 +66,7 @@ public class UsuarioController : Controller
             return View();
         }
 
+        HttpContext.Session.SetString("UsuarioTipo", usuario.Tipo);
         HttpContext.Session.SetString("UsuarioNome", usuario.Nome);
         HttpContext.Session.SetString("UsuarioId", usuario.Id);
         return RedirectToAction("Index", "Produto");
@@ -67,7 +80,7 @@ public class UsuarioController : Controller
 
     public ActionResult Delete(string id)
     {
-
+        if (!IsAdmin()) return RedirectToAction("Index", "Produto");
         var usuario = db.Usuario.Single(u => u.Id == id);
         db.Usuario.Remove(usuario);
         db.SaveChanges();
@@ -78,6 +91,7 @@ public class UsuarioController : Controller
     [HttpGet]
     public ActionResult Editar(string id)
     {
+        if (!IsAdmin()) return RedirectToAction("Index", "Produto");
         var usuario = db.Usuario.Single(u => u.Id == id);
         return View(usuario);
     }
@@ -85,6 +99,7 @@ public class UsuarioController : Controller
     [HttpPost]
     public ActionResult Editar(Usuario u)
     {
+        if (!IsAdmin()) return RedirectToAction("Index", "Produto");
         db.Usuario.Update(u);
         db.SaveChanges();
         TempData["Sucesso"] = $"Usuário \"{u.Nome}\" atualizado com sucesso";
