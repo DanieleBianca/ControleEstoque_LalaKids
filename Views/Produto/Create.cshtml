@@ -155,15 +155,18 @@
     </nav>
     <hr class="sidebar-divider" />
     <div class="sidebar-footer">
-        <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
+        @if (Context.Session.GetString("UsuarioTipo") == "admin")
+        {
+            <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
+        }
         <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
     </div>
 </div>
 
+
 <div class="main-content">
     <div class="main-titulo">Novo Produto</div>
     <div class="main-subtitulo">Preencha os dados do produto a ser cadastrado</div>
-
     @if (TempData["Erro"] != null)
     {
         <div style="background:#fdecea; color:#F24822; border:1px solid #F24822; border-radius:8px; padding:12px 16px; margin-bottom:16px; font-weight:600; width:100%; max-width:600px;">
