@@ -209,6 +209,10 @@
         {
             <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
         }
+        @if (Context.Session.GetString("UsuarioTipo") != "admin")
+        {
+            <a href="/Usuario/TrocarSenha" class="btn-sidebar-link">Trocar Senha</a>
+        }
         <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
     </div>
 </div>
@@ -257,12 +261,9 @@
                         <th>Código de Barras</th>
                         <th>Produto</th>
                         <th>Marca</th>
-                        @if (Context.Session.GetString("UsuarioTipo") == "admin")
-                        {
-                            <th>Preço Compra</th>
-                            <th>Preço Revenda</th>
-                            <th></th>
-                        }
+                        <th>Preço Compra</th>
+                        <th>Preço Revenda</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -297,18 +298,18 @@
                             </span>
                         </td>
                         <td>@p.Marca</td>
-                        @if (Context.Session.GetString("UsuarioTipo") == "admin")
-                        {
-                            <td class="preco">R$ @p.ValorCompra.ToString("F2")</td>
-                            <td class="preco">R$ @p.ValorRevenda.ToString("F2")</td>
-                            <td>
-                                <a href="/produto/update/@p.Id" class="btn-editar">Editar</a>
+                        <td class="preco">R$ @p.ValorCompra.ToString("F2")</td>
+                        <td class="preco">R$ @p.ValorRevenda.ToString("F2")</td>
+                        <td>
+                            <a href="/produto/update/@p.Id" class="btn-editar">Editar</a>
+                            @if (Context.Session.GetString("UsuarioTipo") == "admin")
+                            {
                                 <a href="/produto/delete/@p.Id" class="btn-excluir"
-                                   onclick="return confirm('Tem certeza que deseja excluir @p.Nome?')">
+                                onclick="return confirm('Tem certeza que deseja excluir @p.Nome?')">
                                     Excluir
                                 </a>
-                            </td>
-                        }
+                            }
+                        </td>
                     </tr>
                 }
                 </tbody>

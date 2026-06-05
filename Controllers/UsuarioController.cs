@@ -105,4 +105,38 @@ public class UsuarioController : Controller
         TempData["Sucesso"] = $"Usuário \"{u.Nome}\" atualizado com sucesso";
         return RedirectToAction("Index");
     }
+
+    [HttpGet]
+public ActionResult TrocarSenha()
+{
+    if (!UsuarioLogado()) return RedirectToAction("Login");
+    return View();
+}
+
+[HttpPost]
+public ActionResult TrocarSenha(string senhaAtual, string novaSenha)
+{
+    if (!UsuarioLogado()) return RedirectToAction("Login");
+
+    var id = HttpContext.Session.GetString("UsuarioId");
+    var usuario = db.Usuario.Single(u => u.Id == id);
+
+    if (usuario.Senha != senhaAtual)
+    {
+        TempData["Erro"] = "Senha atual incorreta";
+        return RedirectToAction("TrocarSenha");
+    }
+
+    if (string.IsNullOrEmpty(novaSenha))
+    {
+        TempData["Erro"] = "A nova senha não pode ser vazia";
+        return RedirectToAction("TrocarSenha");
+    }
+
+    usuario.Senha = novaSenha;
+    db.Usuario.Update(usuario);
+    db.SaveChanges();
+    TempData["Sucesso"] = "Senha alterada com sucesso";
+    return RedirectToAction("TrocarSenha");
+}
 }

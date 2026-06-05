@@ -94,6 +94,8 @@ public class ProdutoController : Controller //herança do controller; produto é
     public ActionResult Delete(string id) //método do crud, DELETE
     {
         if (!UsuarioLogado()) return RedirectToAction("Login", "Usuario");
+        if (HttpContext.Session.GetString("UsuarioTipo") != "admin") 
+            return RedirectToAction("Index");
         // remove os tamanhos do produto antes de remover o produto
         var tamanhos = db.ProdutoTamanho.Where(pt => pt.IdProduto == id).ToList();
         db.ProdutoTamanho.RemoveRange(tamanhos);

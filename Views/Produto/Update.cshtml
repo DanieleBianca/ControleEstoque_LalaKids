@@ -169,6 +169,10 @@
         {
             <a href="/Usuario/Index" class="btn-sidebar-link">Gerenciar Usuários</a>
         }
+        @if (Context.Session.GetString("UsuarioTipo") != "admin")
+        {
+            <a href="/Usuario/TrocarSenha" class="btn-sidebar-link">Trocar Senha</a>
+        }
         <a href="/Usuario/Logout" class="btn-sidebar-link btn-sair">Sair</a>
     </div>
 </div>
