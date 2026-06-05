@@ -222,58 +222,84 @@
         <div class="alerta-sucesso">@TempData["Sucesso"]</div>
     }
 
-    <div class="card-form">
-        <form action="/produto/movimentar" method="POST">
+<div class="card-form">
+    <form action="/produto/movimentar" method="POST">
 
-            <div class="mb-4">
-                <label class="form-label">Tipo de Movimentação</label>
-                <div class="radio-group">
-                    <label class="radio-option">
-                        <input type="radio" name="tipo" value="entrada" id="entrada" checked />
-                        Entrada
-                    </label>
-                    <label class="radio-option">
-                        <input type="radio" name="tipo" value="saida" id="saida" />
-                        Saída
-                    </label>
-                </div>
+        <div class="mb-4">
+            <label class="form-label">Tipo de Movimentação</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="tipo" value="entrada"
+                        @(TempData["TipoMovimentacao"]?.ToString() == "saida" ? "" : "checked") />
+                    Entrada
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="tipo" value="saida"
+                        @(TempData["TipoMovimentacao"]?.ToString() == "saida" ? "checked" : "") />
+                    Saída
+                </label>
             </div>
+        </div>
 
-            <p class="secao-titulo">Produtos*</p>
-            <div id="itens">
-                <div class="d-flex gap-2 mb-2">
-                    <input class="form-control" name="CodigosBarras[0]" placeholder="Código de Barras" required />
+        <p class="secao-titulo">Produtos*</p>
+        <div id="itens">
+            <div class="item-linha mb-2">
+                <div class="d-flex gap-2 align-items-center">
+                    <input class="form-control" name="CodigosBarras[0]" placeholder="Código de Barras"
+                        required oninput="buscarProduto(this, 0)" />
                     <input class="form-control" name="Tamanhos[0]" placeholder="Tamanho" required />
                     <input class="form-control" name="Quantidades[0]" type="number" min="1" placeholder="Qtd" required />
                 </div>
+                <div class="nome-produto" id="nome-0" style="font-size:0.82rem; color:#2E6A8E; margin-top:4px; min-height:18px;"></div>
             </div>
+        </div>
 
-            <button type="button" class="btn-adicionar" onclick="adicionarItem()">+ Adicionar produto</button>
+        <button type="button" class="btn-adicionar" onclick="adicionarItem()">+ Adicionar produto</button>
 
-            <div class="acoes">
-                <button type="submit" class="btn-confirmar">Confirmar</button>
-                <a href="/produto/index" class="link-cancelar">Cancelar</a>
-            </div>
+        <div class="acoes">
+            <button type="submit" class="btn-confirmar">Confirmar</button>
+            <a href="/produto/index" class="link-cancelar">Cancelar</a>
+        </div>
 
-        </form>
-    </div>
+    </form>
 </div>
 
 <script>
     var contador = 1;
+
+    function buscarProduto(input, index) {
+        var codigo = input.value.trim();
+        var nomeDiv = document.getElementById('nome-' + index);
+        if (codigo.length === 0) { nomeDiv.textContent = ''; return; }
+
+        fetch('/produto/buscarporcodigo?codigo=' + encodeURIComponent(codigo))
+            .then(r => r.json())
+            .then(data => {
+                nomeDiv.textContent = data.nome ? '✓ ' + data.nome : '✗ Produto não encontrado';
+                nomeDiv.style.color = data.nome ? '#14ae5c' : '#F24822';
+            })
+            .catch(() => { nomeDiv.textContent = ''; });
+    }
+
     function adicionarItem() {
         var div = document.createElement('div');
-        div.className = 'd-flex gap-2 mb-2';
+        div.className = 'item-linha mb-2';
+        var idx = contador;
         div.innerHTML = `
-            <input class="form-control" name="CodigosBarras[${contador}]" placeholder="Código de Barras*" required />
-            <input class="form-control" name="Tamanhos[${contador}]" placeholder="Tamanho* (ex: 10, 12...)" required />
-            <input class="form-control" name="Quantidades[${contador}]" type="number" min="1" placeholder="Qtd*" required />
-            <button type="button" class="btn btn-danger" onclick="removerItem(this)">✕</button>
+            <div class="d-flex gap-2 align-items-center">
+                <input class="form-control" name="CodigosBarras[${idx}]" placeholder="Código de Barras"
+                       required oninput="buscarProduto(this, ${idx})" />
+                <input class="form-control" name="Tamanhos[${idx}]" placeholder="Tamanho" required />
+                <input class="form-control" name="Quantidades[${idx}]" type="number" min="1" placeholder="Qtd" required />
+                <button type="button" class="btn btn-danger" onclick="removerItem(this)">✕</button>
+            </div>
+            <div id="nome-${idx}" style="font-size:0.82rem; margin-top:4px; min-height:18px;"></div>
         `;
         document.getElementById('itens').appendChild(div);
         contador++;
     }
-        function removerItem(btn) {
-            btn.closest('div').remove();
+
+    function removerItem(btn) {
+        btn.closest('.item-linha').remove();
     }
 </script>

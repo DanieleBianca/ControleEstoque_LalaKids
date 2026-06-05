@@ -162,6 +162,8 @@
         padding: 16px 20px;
         font-size: 0.9rem;
     }
+
+    .btn-voltar.ativo { background-color: #2E6A8E; color: white; border-color: #2E6A8E; }
 </style>
 
 <div class="sidebar">
@@ -204,7 +206,13 @@
             <div class="main-titulo">Histórico de Movimentações</div>
             <div class="main-subtitulo">Todas as entradas e saídas registradas</div>
         </div>
-        <a href="/produto/relatorios" class="btn-voltar">Voltar</a>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <a href="/produto/RelatorioHistoricoMovimentacoes" class="btn-voltar @(ViewBag.Filtro == null ? "ativo" : "")">Todos</a>
+            <a href="/produto/RelatorioHistoricoMovimentacoes?dias=7" class="btn-voltar @(ViewBag.Filtro == 7 ? "ativo" : "")">7 dias</a>
+            <a href="/produto/RelatorioHistoricoMovimentacoes?dias=15" class="btn-voltar @(ViewBag.Filtro == 15 ? "ativo" : "")">15 dias</a>
+            <a href="/produto/RelatorioHistoricoMovimentacoes?dias=30" class="btn-voltar @(ViewBag.Filtro == 30 ? "ativo" : "")">1 mês</a>
+            <a href="/produto/relatorios" class="btn-voltar">Voltar</a>
+        </div>
     </div>
 
     @if (!Model.Any())

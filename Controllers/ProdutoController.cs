@@ -251,7 +251,10 @@ public class ProdutoController : Controller //herança do controller; produto é
 
     db.SaveChanges();
     if (erros.Any())
-        TempData["Erro"] = string.Join(" | ", erros);
+        {
+            TempData["Erro"] = string.Join(" | ", erros);
+            TempData["TipoMovimentacao"] = tipo;
+        }
     else
         TempData["Sucesso"] = "Estoque atualizado com sucesso";
 
@@ -279,17 +282,23 @@ public class ProdutoController : Controller //herança do controller; produto é
 
 
     // relatório: histórico de todas as movimentações com seus itens
-    public ActionResult RelatorioHistoricoMovimentacoes()
+    public ActionResult RelatorioHistoricoMovimentacoes(int? dias)
     {
-        var movimentacoes = db.Movimentacao
-            .OrderByDescending(m => m.Data)
-            .ToList();
+        var query = db.Movimentacao.AsQueryable();
+
+        if (dias.HasValue)
+        {
+            var dataLimite = DateTime.Now.AddDays(-dias.Value);
+            query = query.Where(m => m.Data >= dataLimite);
+            ViewBag.Filtro = dias.Value;
+        }
+
+        var movimentacoes = query.OrderByDescending(m => m.Data).ToList();
 
         ViewBag.Itens = db.MovimentacaoItem.ToList();
         ViewBag.Produtos = db.Produto.ToList();
         ViewBag.Usuarios = db.Usuario.ToList();
 
-        ViewBag.Movimentacoes = db.Movimentacao.ToList();
         return View(movimentacoes);
 
     }
@@ -389,6 +398,14 @@ public class ProdutoController : Controller //herança do controller; produto é
         db.ProdutoTamanho.Remove(pt);
         db.SaveChanges();
         return RedirectToAction("Update", new { id = idProduto });
+    }
+
+    public ActionResult BuscarPorCodigo(string codigo)
+    {
+        var produto = db.Produto.FirstOrDefault(p => p.CodigoBarras == codigo);
+        if (produto == null)
+            return Json(new { nome = (string)null });
+        return Json(new { nome = produto.Nome });
     }
 
 }
