@@ -258,8 +258,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Código de Barras</th>
                         <th>Produto</th>
+                        <th>Código de Barras</th>
                         <th>Marca</th>
                         <th>Preço Compra</th>
                         <th>Preço Revenda</th>
@@ -285,7 +285,6 @@
                         : "Sem tamanhos cadastrados";
 
                     <tr>
-                        <td>@p.CodigoBarras</td>
                         <td>
                             <span class="produto-nome"
                                 data-bs-toggle="popover"
@@ -297,6 +296,7 @@
                                 @p.Nome
                             </span>
                         </td>
+                        <td>@p.CodigoBarras</td>
                         <td>@p.Marca</td>
                         <td class="preco">R$ @p.ValorCompra.ToString("F2")</td>
                         <td class="preco">R$ @p.ValorRevenda.ToString("F2")</td>

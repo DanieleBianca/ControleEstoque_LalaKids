@@ -203,8 +203,8 @@
             <table id="tabelaProdutos">
                 <thead>
                     <tr>
-                        <th>Código de Barras</th>
                         <th>Nome</th>
+                        <th>Código de Barras</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -212,8 +212,8 @@
                     @foreach (var p in Model)
                     {
                         <tr>
-                            <td><span class="codigo-badge">@p.CodigoBarras</span></td>
                             <td>@p.Nome</td>
+                            <td><span class="codigo-badge">@p.CodigoBarras</span></td>
                             <td style="text-align:right">
                                 <a href="/produto/relatorioHistoricoPorProduto?id=@p.Id" class="btn-historico">
                                     Ver Histórico
