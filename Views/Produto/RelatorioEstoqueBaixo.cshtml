@@ -161,12 +161,22 @@
 </div>
 
 <div class="main-content">
-    <div class="page-header">
+    <div class="page-header" style="flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
         <div>
             <div class="main-titulo">Estoque Baixo</div>
-            <div class="main-subtitulo">Tamanhos com 2 unidades ou menos</div>
+            <div class="main-subtitulo">
+                Mostrando tamanhos com <span style="color:#F24822; font-weight:700;">@ViewBag.Limite @(ViewBag.Limite == 1 ? "unidade" : "unidades")</span> ou menos
+            </div>
         </div>
-        <a href="/produto/relatorios" class="btn-voltar">Voltar</a>
+        <div style="display:flex; gap:8px; align-items:center;">
+            <form method="get" action="/produto/RelatorioEstoqueBaixo" style="display:flex; gap:8px; align-items:center;">
+                <label style="font-size:0.85rem; font-weight:600; color:#666;">Limite:</label>
+                <input type="number" name="limite" min="0" value="@ViewBag.Limite"
+                       style="width:70px; border:1px solid #ebebeb; border-radius:8px; padding:6px 10px; font-size:0.9rem;" />
+                <button type="submit" class="btn-voltar">Filtrar</button>
+            </form>
+            <a href="/produto/relatorios" class="btn-voltar">Voltar</a>
+        </div>
     </div>
 
     @{
@@ -198,7 +208,7 @@
                         @foreach (var pt in tamanhosDoProduto)
                         {
                             <span class="badge-tamanho @(pt.Quantidade == 0 ? "badge-zero" : "badge-baixo")">
-                                @pt.Tamanho: @pt.Quantidade @(pt.Quantidade <= 1 ? "unidade" : "unidades")
+                                @pt.Tamanho: <span style="color:#fe0505; font-weight:700;">@pt.Quantidade</span> @(pt.Quantidade <= 1 ? "unidade" : "unidades")
                             </span>
                         }
                     </div>

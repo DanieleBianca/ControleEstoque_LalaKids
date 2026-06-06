@@ -268,18 +268,18 @@ public class ProdutoController : Controller //herança do controller; produto é
     }
 
     // relatório: estoque baixo (tamanhos com quantidade menor ou igual a 2)
-    public ActionResult RelatorioEstoqueBaixo()
+    public ActionResult RelatorioEstoqueBaixo(int? limite)
     {
-        // busca tamanhos com quantidade baixa
+        int qtdLimite = limite ?? 2;
+
         var tamanhosBaixos = db.ProdutoTamanho
-            .Where(pt => pt.Quantidade <= 2) // limite de estoque baixo
-            .OrderBy(pt => pt.Quantidade) // os mais críticos primeiro
+            .Where(pt => pt.Quantidade <= qtdLimite)
             .ToList();
 
-        ViewBag.Produtos = db.Produto.ToList();
+        ViewBag.Produtos = db.Produto.OrderBy(p => p.Nome).ToList();
+        ViewBag.Limite = qtdLimite;
         return View(tamanhosBaixos);
     }
-
 
     // relatório: histórico de todas as movimentações com seus itens
     public ActionResult RelatorioHistoricoMovimentacoes(int? dias)
